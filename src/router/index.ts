@@ -4,9 +4,9 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/home',
-      name: 'home',
-      component: ()=>import("../pages/home/HomeView.vue")
+      path: '/list',
+      name: 'list',
+      component: ()=>import("../pages/list/ListView.vue")
     },
     {
       path: "/login",
@@ -20,8 +20,13 @@ const router = createRouter({
     },
     {
       path: "/",
-      redirect: 'home'
-    }
+      redirect: 'list'
+    },
+    {
+      path: '/:pathMatch(.*)*',  // Vue Router 4的通配符写法
+      name: 'NotFound',
+      component: ()=>import("../pages/notfound/NotFoundView.vue"),
+    },
   ]
 })
 

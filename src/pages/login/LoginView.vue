@@ -52,7 +52,7 @@ const loginHandler=async ()=>{
 
   if(response.ok){
     localStorage.setItem("token", response.msg);
-    router.push("/home");
+    router.push("/");
   }else{
     message.error(`登录失败: ${response.msg}`);
   }
