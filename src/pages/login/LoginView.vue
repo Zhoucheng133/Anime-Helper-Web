@@ -14,7 +14,7 @@
         </div>
         <div class="item">
           <div class="itemLabel">密码</div>
-          <a-input-password size="large" v-model:value="password"></a-input-password>
+          <a-input-password size="large" v-model:value="password" @pressEnter="loginHandler"></a-input-password>
         </div>
         <div class="loginButton" @click="loginHandler">登录</div>
       </div>

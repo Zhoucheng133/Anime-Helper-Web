@@ -18,7 +18,7 @@
         </div>
         <div class="item">
           <div class="itemLabel">重复密码</div>
-          <a-input-password size="large" v-model:value="password_again"></a-input-password>
+          <a-input-password size="large" v-model:value="password_again" @pressEnter="register"></a-input-password>
         </div>
         <div class="loginButton" @click="register">注册</div>
       </div>
