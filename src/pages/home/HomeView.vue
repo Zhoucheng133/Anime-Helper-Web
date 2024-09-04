@@ -1,55 +1,42 @@
 <template>
-  <div class="bg">
-    <div class="topbar">
-      <div class="title">AnimeGo</div>
-      <div class="menu">
-        <div class="menuItem" style="margin-right: 20px;">列表</div>
-        <div class="menuItem" style="margin-right: 20px;">本季度番剧表</div>
-        <div class="menuItem">下载器</div>
-      </div>
-      <div class="tools">注销</div>
-    </div>
+  <div class="topbar">
+    <img src="../../assets/icon.svg" alt="" width="40px">
+    <div class="title">AnimeHelper</div>
+  </div>
+  <div class="body">
+    hello?
   </div>
 </template>
 
 <script setup lang="ts">
-document.title="AnimeGo | 主页"
+document.title="AnimeHelper | 主页"
 </script>
 
 <style scoped>
-.menu{
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.body{
+  margin: auto;
+  width: 1000px;
 }
-.tools{
-  margin-left: auto;
-  width: 150px;
-  text-align: right;
-  
+@media screen and (max-width: 1000px) {
+  .body {
+    width: 100%
+  }
 }
 .title {
   font-size: 20px;
-  width: 150px;
+  margin-left: 20px;
 }
 
 .topbar {
-  width: 100vw;
-  height: 100%;
+  width: 100%;
+  height: 80px;
   border-bottom: 2px solid rgb(240, 240, 240);
   display: flex;
   align-items: center;
   padding-left: 30px;
   padding-right: 30px;
-}
-
-.bg {
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  /* grid-r: 100px 1fr; */
-  grid-template-rows: 80px 1fr 80px;
-  user-select: none;
+  position: sticky;
+  top: 0;
+  background-color: white;
 }
 </style>
