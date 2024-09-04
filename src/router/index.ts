@@ -9,6 +9,16 @@ const router = createRouter({
       component: ()=>import("../pages/list/ListView.vue")
     },
     {
+      path: "/bangumi",
+      name: "bangumi",
+      component: ()=>import("../pages/bangumi/BangumiView.vue")
+    },
+    {
+      path: "/downloader",
+      name: "downloader",
+      component: ()=>import("../pages/downloader/DownloaderView.vue")
+    },
+    {
       path: "/login",
       name: "login",
       component: ()=>import("../pages/login/LoginView.vue")

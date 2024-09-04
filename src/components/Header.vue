@@ -5,9 +5,9 @@
       <div class="title">AnimeHelper</div>
     </div>
     <div class="menus" v-show="!isMobile">
-      <div :class="isSelect('list') ? 'menuItem_select':'menuItem'" style="margin-left: 0;">列表</div>
-      <div :class="isSelect('bangumi') ? 'menuItem_select':'menuItem'">每日放送</div>
-      <div :class="isSelect('downloader') ? 'menuItem_select':'menuItem'">下载器</div>
+      <div :class="isSelect('list') ? 'menuItem_select':'menuItem'" style="margin-left: 0;" @click="link('list')">列表</div>
+      <div :class="isSelect('bangumi') ? 'menuItem_select':'menuItem'" @click="link('bangumi')">每日放送</div>
+      <div :class="isSelect('downloader') ? 'menuItem_select':'menuItem'" @click="link('downloader')">下载器</div>
     </div>
     <div class="logout" v-show="!isMobile" @click="logoutHandler">
       <i class="bi bi-box-arrow-right"></i>
@@ -28,6 +28,13 @@ const page=window.location.pathname;
 const logoutHandler=()=>{
   localStorage.clear();
   router.push("/login");
+}
+
+const link=(path: string)=>{
+  if(page.includes(path)){
+    return;
+  }
+  router.push(`/${path}`);
 }
 
 const isSelect=(name: string): boolean=>{
@@ -69,10 +76,10 @@ onMounted(()=>{
 }
 .menuItem, .menuItem_select{
   margin-left: 20px;
+  transition: color linear .2s;
 }
 .menuItem{
   cursor: pointer;
-  transition: color linear .2s;
 }
 .menuItem:hover{
   color: #1677ff;
