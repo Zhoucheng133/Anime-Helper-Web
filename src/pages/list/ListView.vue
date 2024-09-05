@@ -9,7 +9,7 @@
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'progress'">
-          <a-progress :percent="record.now/record.episode*100" :showInfo="false" />
+          <a-progress :percent="record.now/analyseEpisode(record)*100" :showInfo="false" />
         </template>
         <template v-else-if="column.key === 'op'">
           <a>编辑</a>
@@ -21,6 +21,9 @@
         </template>
         <template v-else-if="column.key === 'title'">
           <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
+        </template>
+        <template v-else-if="column.key === 'episode'">
+          {{ analyseEpisode(record) }}
         </template>
       </template>
     </a-table>
@@ -88,7 +91,7 @@ export interface BangumiItem{
   episode: number,
   now: number,
   onUpdate: boolean,
-  time: string,
+  time: number,
 }
 
 const judge=()=>{
@@ -115,15 +118,21 @@ function getTimestampOfFirstEpisode(todayTimestamp: number, releaseDay: number, 
 }
 
 // 计算截至到今天的已更新集数
-function calculateEpisodesReleased(todayTimestamp: number, releaseDay: number, firstEpisodeTimestamp: number): number {
-  const firstEpisodeDate = new Date(firstEpisodeTimestamp);
-  const daysSinceFirstEpisode = Math.floor((todayTimestamp - firstEpisodeDate.getTime()) / (24 * 60 * 60 * 1000));
-  const weeksSinceFirstEpisode = Math.floor(daysSinceFirstEpisode / 7);
-  const today = new Date(todayTimestamp);
-  const isTodayReleaseDay = today.getDay() === releaseDay;
-  return weeksSinceFirstEpisode + (isTodayReleaseDay ? 1 : 0);
+function calculateEpisodesReleased(firstEpisodeTimestamp: number): number {
+  const tmp = new Date();
+  const currentDate = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate());
+  const difference = currentDate.getTime() - firstEpisodeTimestamp;
+  const daysPassed=Math.floor(difference / (1000 * 60 * 60 * 24));
+  const weeksPassed = Math.floor(daysPassed / 7);
+  return Math.max(weeksPassed, 0) + 1;
 }
 
+const analyseEpisode=(item: BangumiItem)=>{
+  if(!item.onUpdate){
+    return item.episode;
+  }
+  return calculateEpisodesReleased(item.time)>item.episode?item.episode:calculateEpisodesReleased(item.time);
+}
 
 const handleOk=async ()=>{
   if(add_title.value.length==0){
@@ -137,7 +146,7 @@ const handleOk=async ()=>{
     episode: add_episodes.value,
     now: add_now.value,
     onUpdate: add_onUpdate.value,
-    time: add_onUpdate.value ? getTimestampOfFirstEpisode(todayTimestamp, add_weekday.value, add_updateTo.value).toString() : ""
+    time: add_onUpdate.value ? getTimestampOfFirstEpisode(todayTimestamp, add_weekday.value, add_updateTo.value) : 0
   }
   const response=(await axios.post(`${baseURL}/api/addlist`, {
     data: jsonItem,
@@ -171,6 +180,9 @@ const getList=async ()=>{
   })).data;
   if(response.ok){
     dataSource.value=response.msg;
+    // analyseData(response.msg);
+  }else{
+    message.error("获取列表失败: "+response.msg);
   }
 }
 
