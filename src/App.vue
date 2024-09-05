@@ -63,4 +63,7 @@ onMounted(async ()=>{
 #app{
   font-family: "Gill Sans", sans-serif;
 }
+.ant-modal div[aria-hidden="true"] {
+  display: none !important;
+}
 </style>
