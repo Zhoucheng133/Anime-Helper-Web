@@ -37,24 +37,35 @@
 
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
+import { baseURL } from '@/stores/network';
 import { PlusOutlined } from "@ant-design/icons-vue";
-import { ref } from 'vue';
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 document.title="AnimeHelper | 列表";
+
+let dataSource=ref([]);
+const token=localStorage.getItem("token");
+const router=useRouter();
+if(!token){
+  router.replace("/login")
+}
+
+onMounted(async ()=>{
+  const response=(await axios.get(`${baseURL}/api/list`, {
+    headers: {
+      "token": token,
+    }
+  })).data;
+  if(response.ok){
+    dataSource.value=response.msg;
+  }
+})
 
 const addHandler=()=>{
 
 }
-
-interface ListItem{
-  id: string,
-  title: string,
-  episode: number | undefined,
-  now: number | undefined,
-  onUpdate: boolean | undefined,
-  time: string | undefined,
-}
-
 const columns=[
   {
     title: '标题',
@@ -88,16 +99,6 @@ const columns=[
     width: 180
   },
 ]
-const dataSource=ref<ListItem[]>([
-  {
-    id: "12121",
-    title: "测试一个非常非常长的标题会显示什么",
-    episode: 24,
-    now: 20,
-    onUpdate: true,
-    time: undefined,
-  },
-]);
 
 </script>
 
