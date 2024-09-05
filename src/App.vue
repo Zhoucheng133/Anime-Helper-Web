@@ -1,10 +1,13 @@
 <template>
-  <LoadingView v-if="loading" />
-  <RouterView v-else />
+  <a-config-provider :locale="locale">
+    <LoadingView v-if="loading" />
+    <RouterView v-else />
+  </a-config-provider>
 </template>
 
 
 <script lang="ts" setup>
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import { onMounted, ref } from 'vue';
 import {useRouter} from "vue-router"
 import { RouterView } from 'vue-router'
@@ -13,6 +16,7 @@ import axios from 'axios';
 import { baseURL } from './stores/network';
 import { message } from 'ant-design-vue';
 const router=useRouter();
+const locale=zhCN;
 let loading=ref(true);
 document.title="加载中"
 onMounted(async ()=>{
