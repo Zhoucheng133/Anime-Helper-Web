@@ -15,21 +15,13 @@
           <a>编辑</a>
           <a style="margin-left: 10px;">添加到下载器</a>
         </template>
-        <template v-else-if="column.key === 'title'">
-          <div style="display: grid; grid-template-columns: auto 70px;" v-if="record.onUpdate">
-            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
-            <div><a-tag style="margin-left: 5px;" color="green">更新中</a-tag></div>
-          </div>
-          <div v-else style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
+        <template v-if="column.key === 'status'">
+          <a-tag color="green" v-if="record.onUpdate">更新中</a-tag>
+          <a-tag v-else>已完结</a-tag>
         </template>
-      </template>
-      <template #expandedRowRender="{ record }">
-        <p style="margin: 0">
-          {{ record.title }}
-        </p>
-      </template>
-      <template #expandColumnTitle>
-        <PlusOutlined />
+        <template v-else-if="column.key === 'title'">
+          <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
+        </template>
       </template>
     </a-table>
   </div>
@@ -72,7 +64,13 @@ const columns=[
     dataIndex: 'title',
     key: 'title',
     fixed: 'left',
-    width: 150,
+    width: 200,
+  },
+  {
+    title: "状态",
+    dataIndex: 'status',
+    key: 'status',
+    width: 70,
   },
   {
     title: "集数",
