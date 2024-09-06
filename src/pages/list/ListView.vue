@@ -16,7 +16,7 @@
           <a style="margin-left: 10px;">添加到下载器</a>
         </template>
         <template v-if="column.key === 'status'">
-          <a-tag color="green" v-if="record.onUpdate">更新中</a-tag>
+          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)==0 || calculateEpisodesReleased(record.time)<record.episode">更新中</a-tag>
           <a-tag v-else>已完结</a-tag>
         </template>
         <template v-else-if="column.key === 'title'">
@@ -90,7 +90,7 @@ export interface BangumiItem{
   title: string,
   episode: number,
   now: number,
-  onUpdate: boolean,
+  // onUpdate: boolean,
   time: number,
 }
 
@@ -128,7 +128,7 @@ function calculateEpisodesReleased(firstEpisodeTimestamp: number): number {
 }
 
 const analyseEpisode=(item: BangumiItem)=>{
-  if(!item.onUpdate){
+  if(item.time==0){
     return item.episode;
   }
   return calculateEpisodesReleased(item.time)>item.episode?item.episode:calculateEpisodesReleased(item.time);
@@ -145,7 +145,7 @@ const handleOk=async ()=>{
     title: add_title.value,
     episode: add_episodes.value,
     now: add_now.value,
-    onUpdate: add_onUpdate.value,
+    // onUpdate: add_onUpdate.value,
     time: add_onUpdate.value ? getTimestampOfFirstEpisode(todayTimestamp, add_weekday.value, add_updateTo.value) : 0
   }
   const response=(await axios.post(`${baseURL}/api/addlist`, {
@@ -162,7 +162,6 @@ const handleOk=async ()=>{
     getList();
     showOpen.value=false;
   }
-  
 }
 
 let dataSource=ref([]);
@@ -180,6 +179,12 @@ const getList=async ()=>{
   })).data;
   if(response.ok){
     dataSource.value=response.msg;
+    // dataSource.value=response.msg.map((item: BangumiItem)=>{
+    //   if(calculateEpisodesReleased(item.time)>item.episode){
+    //     return item;
+    //   }
+    //   return item;
+    // })
     // analyseData(response.msg);
   }else{
     message.error("获取列表失败: "+response.msg);
