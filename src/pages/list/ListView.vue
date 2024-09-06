@@ -11,7 +11,7 @@
           <a-progress :percent="record.now/analyseEpisode(record)*100" :showInfo="false" />
         </template>
         <template v-else-if="column.key === 'op'">
-          <a style="user-select: none;">编辑</a>
+          <a style="user-select: none;" @click="openEdit(record)">编辑</a>
           <a style="margin-left: 10px; user-select: none;">添加到下载器</a>
           <a style="margin-left: 10px; user-select: none;" @click="minus_one(record)">
             <i class="bi bi-dash-circle-fill"></i>
@@ -21,7 +21,7 @@
           </a>
         </template>
         <template v-if="column.key === 'status'">
-          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)==0 || calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
+          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
           <a-tag v-else style="user-select: none;">已完结</a-tag>
         </template>
         <template v-else-if="column.key === 'title'">
@@ -70,6 +70,36 @@
       </div>
     </div>
   </a-modal>
+  <a-modal v-model:open="showEdit" title="添加一个新的番剧" @ok="EditOk" centered>
+    <div class="modalContent">
+      <a-input placeholder="番剧标题" v-model:value="edit_title"></a-input>
+      <a-checkbox style="margin-top: 10px;" v-model:checked="edit_onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
+      <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
+        <div style="margin-right: 10px;">集数</div>
+        <a-input-number v-model:value="edit_episodes" :min="1"></a-input-number>
+      </div>
+      <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
+        <div style="margin-right: 10px;">观看至</div>
+        <a-input-number v-model:value="edit_now" :min="1" :max="judge()"></a-input-number>
+      </div>
+      <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="edit_onUpdate">
+        <div style="margin-right: 10px;">更新至</div>
+        <a-input-number v-model:value="edit_updateTo" :min="1" :max="edit_episodes"></a-input-number>
+      </div>
+      <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="edit_onUpdate">
+        <div style="margin-right: 10px;">更新日期</div>
+        <a-select v-model:value="edit_weekday">
+          <a-select-option :value="0">星期日</a-select-option>
+          <a-select-option :value="1">星期一</a-select-option>
+          <a-select-option :value="2">星期二</a-select-option>
+          <a-select-option :value="3">星期三</a-select-option>
+          <a-select-option :value="4">星期四</a-select-option>
+          <a-select-option :value="5">星期五</a-select-option>
+          <a-select-option :value="6">星期六</a-select-option>
+        </a-select>
+      </div>
+    </div>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -94,6 +124,30 @@ let onsearch=ref(false);
 let searchRlt=ref<BangumiItem[]>([]);
 
 let searchKey=ref("");
+
+let showEdit=ref(false);
+
+let edit_title=ref("");
+let edit_onUpdate=ref(false);
+let edit_episodes=ref(1);
+let edit_now=ref(1);
+let edit_updateTo=ref(1);
+let edit_weekday=ref(0);
+
+
+const openEdit=(record: BangumiItem)=>{
+  edit_title.value=record.title;
+  edit_episodes.value=record.episode;
+  edit_onUpdate.value=calculateEpisodesReleased(record.time)<record.episode;
+  edit_updateTo.value=analyseEpisode(record);
+  edit_now.value=record.now;
+  edit_weekday.value=new Date(record.time).getDay()
+  showEdit.value=true;
+}
+
+const EditOk=()=>{
+  
+}
 
 const searchChange=()=>{
   if(searchKey.value.length==0){
