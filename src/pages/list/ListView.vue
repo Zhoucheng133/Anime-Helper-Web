@@ -12,18 +12,31 @@
           <a-progress :percent="record.now/analyseEpisode(record)*100" :showInfo="false" />
         </template>
         <template v-else-if="column.key === 'op'">
-          <a>编辑</a>
-          <a style="margin-left: 10px;">添加到下载器</a>
+          <a style="user-select: none;">编辑</a>
+          <a style="margin-left: 10px; user-select: none;">添加到下载器</a>
+          <a style="margin-left: 10px; user-select: none;" @click="minus_one(record)">
+            <i class="bi bi-dash-circle-fill"></i>
+          </a>
+          <a style="margin-left: 10px; user-select: none;" @click="add_one(record)">
+            <i class="bi bi-plus-circle-fill"></i>
+          </a>
         </template>
         <template v-if="column.key === 'status'">
-          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)==0 || calculateEpisodesReleased(record.time)<record.episode">更新中</a-tag>
-          <a-tag v-else>已完结</a-tag>
+          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)==0 || calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
+          <a-tag v-else style="user-select: none;">已完结</a-tag>
         </template>
         <template v-else-if="column.key === 'title'">
           <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
         </template>
-        <template v-else-if="column.key === 'episode'">
-          {{ analyseEpisode(record) }}
+        <template v-else-if="column.key === 'episode'" >
+          <div style="user-select: none;">
+            {{ analyseEpisode(record) }}
+          </div>
+        </template>
+        <template v-else-if="column.key === 'now'" >
+          <div style="user-select: none;">
+            {{ record.now }}
+          </div>
         </template>
       </template>
     </a-table>
@@ -85,12 +98,55 @@ const changeUpdate=()=>{
   add_now.value=1;
 }
 
+const changeItem=async (item: BangumiItem)=>{
+  const response=(await axios.post(`${baseURL}/api/changeitem`, {
+    data: item,
+  }, {
+    headers: {
+      token: token
+    }
+  })).data;
+  if(response.ok){
+    getList();
+  }else{
+    message.error("修改参数失败: "+response.msg);
+  }
+}
+
+const minus_one=async (item: BangumiItem)=>{
+  if(item.now==1){
+    return;
+  }
+  const index=dataSource.value.findIndex((i)=>item.id==i.id);
+  if(index==-1){
+    return;
+  }else{
+    dataSource.value[index].now=dataSource.value[index].now-1;
+    await changeItem(dataSource.value[index]);
+  }
+}
+
+const add_one=async (item: BangumiItem)=>{
+  
+  if(item.now>=analyseEpisode(item)){
+    return;
+  }
+  const index=dataSource.value.findIndex((i)=>item.id==i.id);  
+  if(index==-1){
+    return;
+  }else{
+    dataSource.value[index].now=dataSource.value[index].now+1;
+    await changeItem(dataSource.value[index]);
+  }
+  
+}
+
 export interface BangumiItem{
   id: string,
   title: string,
   episode: number,
   now: number,
-  // onUpdate: boolean,
+  // onUpdate: boolean
   time: number,
 }
 
@@ -164,7 +220,7 @@ const handleOk=async ()=>{
   }
 }
 
-let dataSource=ref([]);
+let dataSource=ref<BangumiItem[]>([]);
 const token=localStorage.getItem("token");
 const router=useRouter();
 if(!token){
