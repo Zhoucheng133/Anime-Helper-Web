@@ -278,7 +278,7 @@ const columns=[
     dataIndex: 'title',
     key: 'title',
     fixed: 'left',
-    width: 200,
+    width: 150,
   },
   {
     title: "状态",
