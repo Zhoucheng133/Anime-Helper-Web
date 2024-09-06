@@ -1,12 +1,11 @@
 <template>
-  <a-float-button @click="addHandler">
-    <template #icon>
-      <PlusOutlined />
-    </template>
-  </a-float-button>
   <Header></Header>
   <div class="body">
-    <a-table :dataSource="dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
+    <div class="toolbar">
+      <a-button type="primary" style="margin-right: 30px;" @click="addHandler">添加</a-button>
+      <a-input-search placeholder="搜索" v-model:value="searchKey" enter-button @change="searchChange" />
+    </div>
+    <a-table :dataSource="onsearch ? searchRlt : dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'progress'">
           <a-progress :percent="record.now/analyseEpisode(record)*100" :showInfo="false" />
@@ -76,7 +75,6 @@
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
 import { baseURL } from '@/stores/network';
-import { PlusOutlined } from "@ant-design/icons-vue";
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
@@ -91,6 +89,26 @@ let add_now=ref(1);
 let add_episodes=ref(12);
 let add_weekday=ref(0);
 let add_updateTo=ref(1);
+
+let onsearch=ref(false);
+let searchRlt=ref<BangumiItem[]>([]);
+
+let searchKey=ref("");
+
+const searchChange=()=>{
+  if(searchKey.value.length==0){
+    onsearch.value=false;
+  }else{
+    onsearch.value=true;
+    search();
+  }
+}
+
+const search=()=>{
+  searchRlt.value=dataSource.value.filter((item)=>{
+    return item.title.includes(searchKey.value);
+  })  
+}
 
 const showOpen=ref(false);
 
@@ -290,13 +308,17 @@ const columns=[
     title: "操作",
     dataIndex: 'op',
     key: 'op',
-    width: 180
+    width: 200
   },
 ]
 
 </script>
 
 <style scoped>
+.toolbar{
+  margin-bottom: 10px;
+  display: flex;
+}
 .modalContent{
   display: flex;
   flex-direction: column;
