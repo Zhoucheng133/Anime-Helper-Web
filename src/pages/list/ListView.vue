@@ -70,7 +70,7 @@
       </div>
     </div>
   </a-modal>
-  <a-modal v-model:open="showEdit" title="添加一个新的番剧" @ok="EditOk" centered>
+  <a-modal v-model:open="showEdit" title="编辑信息" @ok="EditOk" centered>
     <div class="modalContent">
       <a-input placeholder="番剧标题" v-model:value="edit_title"></a-input>
       <a-checkbox style="margin-top: 10px;" v-model:checked="edit_onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
@@ -80,7 +80,7 @@
       </div>
       <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
         <div style="margin-right: 10px;">观看至</div>
-        <a-input-number v-model:value="edit_now" :min="1" :max="judge()"></a-input-number>
+        <a-input-number v-model:value="edit_now" :min="1" :max="judgeEdit()"></a-input-number>
       </div>
       <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="edit_onUpdate">
         <div style="margin-right: 10px;">更新至</div>
@@ -116,7 +116,7 @@ document.title="AnimeHelper | 列表";
 let add_title=ref("");
 let add_onUpdate=ref(false);
 let add_now=ref(1);
-let add_episodes=ref(12);
+let add_episodes=ref(1);
 let add_weekday=ref(0);
 let add_updateTo=ref(1);
 
@@ -133,6 +133,15 @@ let edit_episodes=ref(1);
 let edit_now=ref(1);
 let edit_updateTo=ref(1);
 let edit_weekday=ref(0);
+let edit_id=ref("");
+
+const judgeEdit=()=>{
+  if(edit_onUpdate.value){
+    return edit_episodes.value>edit_updateTo.value?edit_updateTo.value:edit_episodes.value;
+  }else{
+    return edit_episodes.value;
+  }
+}
 
 
 const openEdit=(record: BangumiItem)=>{
@@ -142,11 +151,20 @@ const openEdit=(record: BangumiItem)=>{
   edit_updateTo.value=analyseEpisode(record);
   edit_now.value=record.now;
   edit_weekday.value=new Date(record.time).getDay()
+  edit_id.value=record.id;
   showEdit.value=true;
 }
 
-const EditOk=()=>{
-  
+const EditOk=async ()=>{
+  const todayTimestamp = Date.now();
+  await changeItem({
+    id: edit_id.value,
+    title: edit_title.value,
+    episode: edit_episodes.value,
+    now: edit_now.value,
+    time: edit_onUpdate.value ? getTimestampOfFirstEpisode(todayTimestamp, edit_weekday.value, edit_updateTo.value) : 0
+  });
+  showEdit.value=false;
 }
 
 const searchChange=()=>{
@@ -286,9 +304,16 @@ const handleOk=async ()=>{
   if(!response.ok){
     message.error("添加失败: "+response.msg);
   }else{
+    add_episodes.value;
     message.success("添加成功");
     getList();
     showOpen.value=false;
+    add_title.value="";
+    add_onUpdate.value=false;
+    add_now.value=1;
+    add_episodes.value=1;
+    add_weekday.value=0;
+    add_updateTo.value=1;
   }
 }
 
