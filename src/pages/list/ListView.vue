@@ -19,7 +19,7 @@
           <a style="margin-left: 10px; user-select: none;" @click="add_one(record)">
             <i class="bi bi-plus-circle-fill"></i>
           </a>
-          <a style="margin-left: 10px; user-select: none;">
+          <a style="margin-left: 10px; user-select: none;" @click="del_item(record)">
             <i class="bi bi-trash3-fill"></i>
           </a>
         </template>
@@ -108,7 +108,7 @@
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
 import { baseURL } from '@/stores/network';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
@@ -189,6 +189,29 @@ const showOpen=ref(false);
 
 const changeUpdate=()=>{
   add_now.value=1;
+}
+
+const del_item=(item: BangumiItem)=>{
+  Modal.confirm({
+    title: "删除项",
+    content: `你确定要删除:《${item.title}》吗`,
+    centered: true,
+    async onOk() {
+      const response=(await axios.post(`${baseURL}/api/dellist`, {
+        id: item.id
+      }, {
+        headers: {
+          token: token,
+        }
+      })).data;
+      if(response.ok){
+        message.success("删除成功")
+        getList();
+      }else{
+        message.error("删除失败: "+response.msg);
+      }
+    },
+  });
 }
 
 const changeItem=async (item: BangumiItem)=>{
