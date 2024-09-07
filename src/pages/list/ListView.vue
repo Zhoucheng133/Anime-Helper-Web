@@ -1,6 +1,6 @@
 <template>
   <Header></Header>
-  <div class="body">
+  <div class="body" v-if="!loading">
     <div class="toolbar">
       <a-button type="primary" style="margin-right: 30px;" @click="addHandler">添加</a-button>
       <a-input-search placeholder="搜索" v-model:value="searchKey" enter-button @change="searchChange" />
@@ -43,6 +43,7 @@
       </template>
     </a-table>
   </div>
+  <InnerLoadingView v-else></InnerLoadingView>
   <a-modal v-model:open="showOpen" title="添加一个新的番剧" @ok="handleOk" centered>
     <div class="modalContent">
       <a-input placeholder="番剧标题" v-model:value="add_title"></a-input>
@@ -106,6 +107,7 @@
 </template>
 
 <script setup lang="ts">
+import InnerLoadingView from '../loading/InnerLoadingView.vue';
 import Header from '@/components/Header.vue';
 import { baseURL } from '@/stores/network';
 import { message, Modal } from 'ant-design-vue';
@@ -115,6 +117,8 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 document.title="AnimeHelper | 列表";
+
+let loading=ref(true);
 
 let add_title=ref("");
 let add_onUpdate=ref(false);
@@ -359,16 +363,10 @@ const getList=async ()=>{
   })).data;
   if(response.ok){
     dataSource.value=response.msg.reverse();
-    // dataSource.value=response.msg.map((item: BangumiItem)=>{
-    //   if(calculateEpisodesReleased(item.time)>item.episode){
-    //     return item;
-    //   }
-    //   return item;
-    // })
-    // analyseData(response.msg);
   }else{
     message.error("获取列表失败: "+response.msg);
   }
+  loading.value=false;
 }
 
 onMounted(()=>{
