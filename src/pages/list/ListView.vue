@@ -189,6 +189,7 @@ const showOpen=ref(false);
 
 const changeUpdate=()=>{
   add_now.value=1;
+  edit_now.value=1;
 }
 
 const del_item=(item: BangumiItem)=>{
