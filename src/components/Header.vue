@@ -14,15 +14,32 @@
       <div class="logoutLabel">注销</div>
     </div>
     <div class="menuFold" v-show="isMobile">
-      <i class="bi bi-arrow-down-short"></i>
+      <i class="bi bi-arrow-down-short" v-if="open"></i>
+      <i class="bi bi-arrow-up-short" v-else @click="showMenu"></i>
     </div>
   </div>
+  <a-drawer title="菜单" placement="bottom" :open="open" @close="onClose" height="500">
+    <div :class="isSelect('list') ? 'm_item_select':'m_item'" @click="link('list')">列表</div>
+    <div :class="isSelect('bangumi') ? 'm_item_select':'m_item'" @click="link('bangumi')">每日放送</div>
+    <div :class="isSelect('downloader') ? 'm_item_select':'m_item'" @click="link('downloader')">下载器</div>
+    <div class="m_logout" @click="logoutHandler">注销</div>
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router=useRouter();
+
+let open=ref(false);
+
+const onClose=()=>{
+  open.value=false;
+}
+
+const showMenu=()=>{
+  open.value=true;
+}
 
 const page=window.location.pathname;
 const logoutHandler=()=>{
@@ -64,6 +81,25 @@ onMounted(()=>{
 </script>
 
 <style scoped>
+.m_logout{
+  margin-top: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  font-size: 16px;
+  color: red;
+}
+.m_item_select{
+  color: lightgrey;
+}
+.m_item, .m_item_select{
+  height: 40px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  font-size: 16px;
+}
 .menuItem_select{
   color: lightgrey;
 }
