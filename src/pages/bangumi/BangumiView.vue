@@ -205,6 +205,12 @@ onMounted(async ()=>{
 
 </script>
 
+<style>
+.ant-collapse-content-box{
+  overflow: hidden !important;
+}
+</style>
+
 <style scoped>
 .item{
   font-size: 15px;
@@ -219,6 +225,7 @@ onMounted(async ()=>{
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 20px;
+  overflow: hidden;
 }
 @media screen and (max-width: 1000px) {
   .body {
