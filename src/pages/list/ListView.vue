@@ -12,12 +12,15 @@
         </template>
         <template v-else-if="column.key === 'op'">
           <a style="user-select: none;" @click="openEdit(record)">编辑</a>
-          <a style="margin-left: 10px; user-select: none;">添加到下载器</a>
+          <a style="margin-left: 10px; user-select: none;">添加到...</a>
           <a style="margin-left: 10px; user-select: none;" @click="minus_one(record)">
             <i class="bi bi-dash-circle-fill"></i>
           </a>
           <a style="margin-left: 10px; user-select: none;" @click="add_one(record)">
             <i class="bi bi-plus-circle-fill"></i>
+          </a>
+          <a style="margin-left: 10px; user-select: none;">
+            <i class="bi bi-trash3-fill"></i>
           </a>
         </template>
         <template v-if="column.key === 'status'">
@@ -331,7 +334,7 @@ const getList=async ()=>{
     }
   })).data;
   if(response.ok){
-    dataSource.value=response.msg;
+    dataSource.value=response.msg.reverse();
     // dataSource.value=response.msg.map((item: BangumiItem)=>{
     //   if(calculateEpisodesReleased(item.time)>item.episode){
     //     return item;
