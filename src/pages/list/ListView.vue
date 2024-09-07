@@ -3,7 +3,7 @@
   <div class="body" v-if="!loading">
     <div class="toolbar">
       <a-button type="primary" style="margin-right: 30px;" @click="addHandler">添加</a-button>
-      <a-input-search placeholder="搜索" v-model:value="searchKey" enter-button @change="searchChange" />
+      <a-input-search :placeholder="variables().isMobile ? '搜索': '按下/可以聚焦到这里'" v-model:value="searchKey" enter-button @change="searchChange" :allowClear="true" ref="searchRef" />
     </div>
     <a-table :dataSource="onsearch ? searchRlt : dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
       <template #bodyCell="{ column, record }">
@@ -115,6 +115,7 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import variables from '@/stores/variables';
 
 document.title="AnimeHelper | 列表";
 
@@ -141,6 +142,17 @@ let edit_now=ref(1);
 let edit_updateTo=ref(1);
 let edit_weekday=ref(0);
 let edit_id=ref("");
+
+const searchRef=ref<any>(null);
+
+window.addEventListener("keydown", (event)=>{
+  if(event.key=="/"){
+    event.preventDefault();
+    if(searchRef.value){
+      searchRef.value.focus();
+    }
+  }
+})
 
 const judgeEdit=()=>{
   if(edit_onUpdate.value){

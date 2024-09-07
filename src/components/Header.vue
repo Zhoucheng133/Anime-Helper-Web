@@ -4,16 +4,16 @@
       <img src="../assets/icon.svg" alt="" width="40px">
       <div class="title">AnimeHelper</div>
     </div>
-    <div class="menus" v-show="!isMobile">
+    <div class="menus" v-show="!variables().isMobile">
       <div :class="isSelect('list') ? 'menuItem_select':'menuItem'" style="margin-left: 0;" @click="link('list')">列表</div>
       <div :class="isSelect('bangumi') ? 'menuItem_select':'menuItem'" @click="link('bangumi')">每日放送</div>
       <div :class="isSelect('downloader') ? 'menuItem_select':'menuItem'" @click="link('downloader')">下载器</div>
     </div>
-    <div class="logout" v-show="!isMobile" @click="logoutHandler">
+    <div class="logout" v-show="!variables().isMobile" @click="logoutHandler">
       <i class="bi bi-box-arrow-right"></i>
       <div class="logoutLabel">注销</div>
     </div>
-    <div class="menuFold" v-show="isMobile">
+    <div class="menuFold" v-show="variables().isMobile">
       <i class="bi bi-arrow-down-short" v-if="open"></i>
       <i class="bi bi-arrow-up-short" v-else @click="showMenu"></i>
     </div>
@@ -29,6 +29,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import variables from '@/stores/variables';
 const router=useRouter();
 
 let open=ref(false);
@@ -62,13 +63,13 @@ const isSelect=(name: string): boolean=>{
 }
 
 
-let isMobile=ref(false);
+// let isMobile=ref(false);
 
 const judge=()=>{
   if(window.innerWidth<800){
-    isMobile.value=true;
+    variables().isMobile=true;
   }else{
-    isMobile.value=false;
+    variables().isMobile=false;
   }
 }
 window.onresize=()=>{
