@@ -20,8 +20,17 @@ export default defineStore("adder", ()=>{
   let add_weekday=ref(0);
   let add_updateTo=ref(1);
 
+  const reset=()=>{
+    add_title.value="";
+    add_onUpdate.value=false;
+    add_now.value=0;
+    add_episodes.value=1;
+    add_weekday.value=0;
+    add_updateTo.value=1;
+  }
+
   const changeUpdate=()=>{
-    add_now.value=1;
+    add_now.value=0;
   }
 
   const judge=()=>{
@@ -55,16 +64,10 @@ export default defineStore("adder", ()=>{
     if(!response.ok){
       message.error("添加失败: "+response.msg);
     }else{
-      add_episodes.value;
+      showAdd.value=false;
       message.success("添加成功");
       list().getList();
-      showAdd.value=false;
-      add_title.value="";
-      add_onUpdate.value=false;
-      add_now.value=1;
-      add_episodes.value=1;
-      add_weekday.value=0;
-      add_updateTo.value=1;
+      reset();
     }
   }
 
@@ -72,5 +75,5 @@ export default defineStore("adder", ()=>{
     showAdd.value=true;
   }
 
-  return {add_title, add_onUpdate, add_now, add_episodes, add_weekday, add_updateTo, changeUpdate, judge, handleOk, addHandler, showAdd}
+  return {add_title, add_onUpdate, add_now, add_episodes, add_weekday, add_updateTo, changeUpdate, judge, handleOk, addHandler, showAdd, reset}
 })
