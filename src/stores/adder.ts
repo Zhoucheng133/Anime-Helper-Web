@@ -15,7 +15,7 @@ export default defineStore("adder", ()=>{
 
   let add_title=ref("");
   let add_onUpdate=ref(false);
-  let add_now=ref(1);
+  let add_now=ref(0);
   let add_episodes=ref(1);
   let add_weekday=ref(0);
   let add_updateTo=ref(1);

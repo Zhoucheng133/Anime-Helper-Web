@@ -50,7 +50,7 @@
       </div>
       <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
         <div style="margin-right: 10px;">观看至</div>
-        <a-input-number v-model:value="adder().add_now" :min="1" :max="adder().judge()"></a-input-number>
+        <a-input-number v-model:value="adder().add_now" :min="0" :max="adder().judge()"></a-input-number>
       </div>
       <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="adder().add_onUpdate">
         <div style="margin-right: 10px;">更新至</div>
