@@ -12,7 +12,12 @@ export default defineStore("log", ()=>{
 
   let logContent=ref<log[]>([]);
 
+  const showLog=()=>{
+    showLogDialog.value=true;
+  }
+
   return {
+    showLog,
     logContent,
     showLogDialog
   }

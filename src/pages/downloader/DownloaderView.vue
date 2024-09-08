@@ -11,7 +11,7 @@
     <div class="item">
       <div class="label">系统操作</div>
       <div class="item_content">
-        <a-button type="link">查看日志</a-button>
+        <a-button type="link" @click="log().showLog">查看日志</a-button>
         <a-button type="link">保存表单</a-button>
       </div>
     </div>
