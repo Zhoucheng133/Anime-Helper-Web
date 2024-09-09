@@ -25,7 +25,7 @@ export default defineStore("list", ()=>{
   }
 
   const minus_one=async (item: BangumiItem)=>{
-    if(item.now==1){
+    if(item.now==0){
       return;
     }
     const index=dataSource.value.findIndex((i)=>item.id==i.id);
@@ -66,7 +66,35 @@ export default defineStore("list", ()=>{
       message.error("修改参数失败: "+response.msg);
     }
   }
+
+  let onsearch=ref(false);
+  let searchKey=ref("");
+
+  const shownList=()=>{
+    if(onsearch.value){
+      return dataSource.value.filter((item)=>{
+        return item.title.includes(searchKey.value);
+      })
+    }else{
+      return dataSource.value
+    }
+  }
+
+  const searchChange=()=>{
+    if(searchKey.value.length==0){
+      onsearch.value=false;
+    }else{
+      onsearch.value=true;
+      // search();
+    }
+  }
+  
+  // const search=()=>{
+    // searchRlt.value=list().dataSource.filter((item)=>{
+    //   return item.title.includes(searchKey.value);
+    // })
+  // }
   
 
-  return {loading, dataSource, getList, minus_one, add_one, changeItem};
+  return {loading, dataSource, getList, minus_one, add_one, changeItem, shownList, onsearch, searchKey, searchChange};
 })

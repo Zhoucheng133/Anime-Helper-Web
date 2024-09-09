@@ -3,9 +3,10 @@
   <div class="body" v-if="!list().loading">
     <div class="toolbar">
       <a-button type="primary" style="margin-right: 30px;" @click="adder().addHandler">添加</a-button>
-      <a-input-search :placeholder="variables().isMobile ? '搜索': '按下/可以聚焦到这里'" v-model:value="searchKey" enter-button @change="searchChange" :allowClear="true" ref="searchRef" />
+      <a-input-search :placeholder="variables().isMobile ? '搜索': '按下/可以聚焦到这里'" v-model:value="list().searchKey" enter-button @change="list().searchChange" :allowClear="true" ref="searchRef" />
     </div>
-    <a-table :dataSource="onsearch ? searchRlt : list().dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
+    <!-- <a-table :dataSource="onsearch ? searchRlt : list().dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky> -->
+    <a-table :dataSource="list().shownList()" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'progress'">
           <a-progress :percent="record.now/analyseEpisode(record)*100" :showInfo="false" />
@@ -124,10 +125,10 @@ import { analyseEpisode, calculateEpisodesReleased } from '@/stores/cal';
 document.title="AnimeHelper | 列表";
 
 
-let onsearch=ref(false);
-let searchRlt=ref<BangumiItem[]>([]);
+// let onsearch=ref(false);
+// let searchRlt=ref<BangumiItem[]>([]);
 
-let searchKey=ref("");
+// let searchKey=ref("");
 
 const searchRef=ref<any>(null);
 
@@ -140,20 +141,6 @@ window.addEventListener("keydown", (event)=>{
   }
 })
 
-const searchChange=()=>{
-  if(searchKey.value.length==0){
-    onsearch.value=false;
-  }else{
-    onsearch.value=true;
-    search();
-  }
-}
-
-const search=()=>{
-  searchRlt.value=list().dataSource.filter((item)=>{
-    return item.title.includes(searchKey.value);
-  })  
-}
 
 const del_item=(item: BangumiItem)=>{
   Modal.confirm({
