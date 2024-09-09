@@ -183,6 +183,23 @@ const columns=[
     dataIndex: 'status',
     key: 'status',
     width: 70,
+    filters: [
+      {
+        text: '更新中',
+        value: 'onUpdate',
+      },
+      {
+        text: '已完结',
+        value: 'finished'
+      }
+    ],
+    onFilter: (value: string, record: BangumiItem)=>{
+      if(value=="onUpdate"){
+        return calculateEpisodesReleased(record.time)<record.episode;
+      }else{
+        return calculateEpisodesReleased(record.time)>=record.episode
+      }
+    },
   },
   {
     title: "集数",
@@ -195,6 +212,23 @@ const columns=[
     dataIndex: 'now',
     key: 'now',
     width: 70,
+    filters: [
+      {
+        text: '进行中',
+        value: 'onProgress',
+      },
+      {
+        text: '已看完',
+        value: 'finished'
+      }
+    ],
+    onFilter: (value: string, record: BangumiItem)=>{
+      if(value=="onProgress"){
+        return record.now/analyseEpisode(record)<1;
+      }else{
+        return  record.now/analyseEpisode(record)>=1
+      }
+    },
   },
   {
     title: "进度",
