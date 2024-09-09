@@ -212,6 +212,12 @@ const columns=[
     dataIndex: 'now',
     key: 'now',
     width: 70,
+  },
+  {
+    title: "进度",
+    dataIndex: 'progress',
+    key: 'progress',
+    width: 100,
     filters: [
       {
         text: '进行中',
@@ -229,12 +235,6 @@ const columns=[
         return  record.now/analyseEpisode(record)>=1
       }
     },
-  },
-  {
-    title: "进度",
-    dataIndex: 'progress',
-    key: 'progress',
-    width: 100,
   },
   {
     title: "操作",
