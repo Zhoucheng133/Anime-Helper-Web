@@ -1,11 +1,16 @@
 import { message, Modal } from "ant-design-vue";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { baseURL } from "./network";
+import axios from "axios";
+import token from "./token";
 interface bangumi {
   title: string,
   ass: string,
 }
 export default defineStore("dl", ()=>{
+
+  let loading=ref(true);
   let running=ref(false);
   let data=ref({
     "type": "mikan",
@@ -144,8 +149,37 @@ export default defineStore("dl", ()=>{
   
   let exclusionAddValue=ref("");
 
+  const saveForm=async ()=>{
+    const response=(await axios.post(`${baseURL}/api/dl/load`, {
+      data: data.value,
+    }, {
+      headers: {
+        token: token().token,
+      }
+    })).data
+
+    console.log(response);
+  }
+
+  const getForm=async ()=>{
+    const response=(await axios.get(`${baseURL}/api/dl`,{
+      headers: {
+        token: token().token,
+      }
+    })).data
+    if(response.ok){
+      data.value=response.msg;
+    }else{
+      message.error("获取下载器表单失败: "+response.msg);
+    }
+    loading.value=false;
+  }
+
 
   return {
+    loading,
+    getForm,
+    saveForm,
     exclusionAddValue,
     addExclusionOk,
     showAddExclusionDialog, 

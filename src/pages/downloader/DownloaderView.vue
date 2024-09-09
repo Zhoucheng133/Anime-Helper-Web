@@ -1,6 +1,6 @@
 <template>
   <Header></Header>
-  <div class="body">
+  <div class="body" v-if="!dl().loading">
     <div class="item">
       <div class="label">运行状态</div>
       <div class="item_content">
@@ -12,7 +12,7 @@
       <div class="label">系统操作</div>
       <div class="item_content">
         <a-button type="link" @click="log().showLog">查看日志</a-button>
-        <a-button type="link">保存表单</a-button>
+        <a-button type="link" @click="dl().saveForm()">保存表单</a-button>
       </div>
     </div>
     <div class="item">
@@ -102,6 +102,7 @@
       </a-collapse-panel>
     </a-collapse>
   </div>
+  <InnerLoadingView v-else/>
   <a-modal v-model:open="dl().showAddBangumiDialog" title="添加一个番剧" @ok="dl().addBangumiOk" @cancel="dl().onDialogCancel" centered>
       <div class="bangumiItem" style="margin-top: 10px;">
         <div class="bangumiItem_title">字幕组</div>
@@ -142,6 +143,7 @@ import { onMounted, ref } from 'vue';
 import dl from '@/stores/dl';
 import log from '@/stores/log';
 document.title="AnimeHelper | 下载器";
+import InnerLoadingView from '../loading/InnerLoadingView.vue';
 
 let width=ref(800);
 
@@ -153,6 +155,7 @@ const toggleRun=()=>{
 
 onMounted(()=>{
   token().getToken();
+  dl().getForm();
   width.value=window.innerWidth;
 })
 
