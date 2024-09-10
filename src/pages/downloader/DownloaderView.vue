@@ -151,6 +151,7 @@ let showFold=ref(['1', '2']);
 
 onMounted(()=>{
   token().getToken();
+  dl().getStatus();
   dl().getForm();
   width.value=window.innerWidth;
 })

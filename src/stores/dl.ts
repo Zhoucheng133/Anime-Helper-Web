@@ -215,8 +215,22 @@ export default defineStore("dl", ()=>{
     }
   }
 
+  const getStatus=async ()=>{
+    const response=(await axios.get(`${baseURL}/api/dl/status`, {
+      headers: {
+        token: token().token,
+      }
+    })).data;
+    if(response.ok){
+      running.value=response.msg;
+    }else{
+      message.error("获取状态失败: "+response.msg);
+    }
+  }
+
 
   return {
+    getStatus,
     toggleRun,
     loading,
     getForm,
