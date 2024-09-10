@@ -149,7 +149,7 @@ export default defineStore("dl", ()=>{
   
   let exclusionAddValue=ref("");
 
-  const saveForm=async ()=>{
+  const saveForm=async (onrun: boolean)=>{
     const response=(await axios.post(`${baseURL}/api/dl/load`, {
       data: data.value,
     }, {
@@ -157,8 +157,12 @@ export default defineStore("dl", ()=>{
         token: token().token,
       }
     })).data
-
-    console.log(response);
+    if(response.ok && !onrun){
+      message.success("保存成功");
+    }else if(!response.ok){
+      message.error("保存表单失败: "+response.msg);
+    }
+    // console.log(response);
   }
 
   const getForm=async ()=>{
@@ -175,7 +179,7 @@ export default defineStore("dl", ()=>{
     loading.value=false;
   }
 
-  const toggleRun=()=>{
+  const toggleRun=async ()=>{
     if(running.value){
       if(data.value.ariaLink.length==0){
         message.error("Aria 地址不能为空");
@@ -185,6 +189,28 @@ export default defineStore("dl", ()=>{
         message.error("番剧表不能为空");
         running.value=false;
         return;
+      }
+      await saveForm(true)
+      const response=(await axios.post(`${baseURL}/api/dl/run`, {}, {
+        headers: {
+          token: token().token
+        }
+      })).data;
+      if(response.ok){
+        message.success("启动服务成功")
+      }else{
+        message.error("启动服务失败: "+response.msg);
+      }
+    }else{
+      const response=(await axios.post(`${baseURL}/api/dl/stop`, {}, {
+        headers: {
+          token: token().token
+        }
+      })).data;
+      if(response.ok){
+        message.success("停止服务成功")
+      }else{
+        message.error("停止服务失败: "+response.msg);
       }
     }
   }

@@ -12,7 +12,7 @@
       <div class="label">系统操作</div>
       <div class="item_content">
         <a-button type="link" @click="log().showLog">查看日志</a-button>
-        <a-button type="link" @click="dl().saveForm()">保存表单</a-button>
+        <a-button type="link" @click="dl().saveForm(false)">保存表单</a-button>
       </div>
     </div>
     <div class="item">
