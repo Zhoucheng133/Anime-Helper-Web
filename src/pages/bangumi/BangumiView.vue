@@ -76,9 +76,12 @@
 import Header from '@/components/Header.vue';
 import InnerLoadingView from '../loading/InnerLoadingView.vue';
 import { onMounted, ref } from 'vue';
-import { testData } from '@/test/bangumi';
+// import { testData } from '@/test/bangumi';
 import token from '@/stores/token';
 import adder from '@/stores/adder';
+import axios from 'axios';
+import { baseURL } from '@/stores/network';
+import { message } from 'ant-design-vue';
 
 document.title="AnimeHelper | 每日更新";
 let list=ref<string[][]>([]);
@@ -105,18 +108,18 @@ export interface BangumiItem{
 onMounted(async ()=>{
   token().getToken();
   // 下面是正式内容
-  // const response=(await axios.get(`${baseURL}/api/calendar`, {
-  //   headers: {
-  //     token: localStorage.getItem("token")
-  //   }
-  // })).data
-  // if(response.ok){
-  //   list.value=response.msg;
-  // }else{
-  //   message.error("请求失败")
-  // }
+  const response=(await axios.get(`${baseURL}/api/calendar`, {
+    headers: {
+      token: localStorage.getItem("token")
+    }
+  })).data
+  if(response.ok){
+    list.value=response.msg;
+  }else{
+    message.error("请求失败")
+  }
   // 下面这行是测试用代码
-  list.value=testData;
+  // list.value=testData;
   // END
 
   loading.value=false;
