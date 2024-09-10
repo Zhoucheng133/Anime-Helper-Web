@@ -175,8 +175,23 @@ export default defineStore("dl", ()=>{
     loading.value=false;
   }
 
+  const toggleRun=()=>{
+    if(running.value){
+      if(data.value.ariaLink.length==0){
+        message.error("Aria 地址不能为空");
+        running.value=false;
+        return;
+      }else if(data.value.bangumi.length==0){
+        message.error("番剧表不能为空");
+        running.value=false;
+        return;
+      }
+    }
+  }
+
 
   return {
+    toggleRun,
     loading,
     getForm,
     saveForm,

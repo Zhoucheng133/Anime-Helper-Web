@@ -5,7 +5,7 @@
       <div class="label">运行状态</div>
       <div class="item_content">
         <a-tag :color="dl().running ? 'success' : 'warning'" style="margin-right: 20px;">{{ dl().running ? '运行中' : "等待中" }}</a-tag>
-        <a-switch v-model:checked="dl().running" @change="toggleRun" />
+        <a-switch v-model:checked="dl().running" @change="dl().toggleRun" />
       </div>
     </div>
     <div class="item">
@@ -148,10 +148,6 @@ import InnerLoadingView from '../loading/InnerLoadingView.vue';
 let width=ref(800);
 
 let showFold=ref(['1', '2']);
-
-const toggleRun=()=>{
-  // 运行/停止
-}
 
 onMounted(()=>{
   token().getToken();
