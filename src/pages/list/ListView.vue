@@ -5,7 +5,6 @@
       <a-button type="primary" style="margin-right: 30px;" @click="adder().addHandler">添加</a-button>
       <a-input-search :placeholder="variables().isMobile ? '搜索': '按下/可以聚焦到这里'" v-model:value="list().searchKey" enter-button @change="list().searchChange" :allowClear="true" ref="searchRef" />
     </div>
-    <!-- <a-table :dataSource="onsearch ? searchRlt : list().dataSource" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky> -->
     <a-table :dataSource="list().shownList()" :columns="columns" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'progress'">
@@ -13,7 +12,7 @@
         </template>
         <template v-else-if="column.key === 'op'">
           <a style="user-select: none;" @click="edit().openEdit(record)">编辑</a>
-          <a style="margin-left: 10px; user-select: none;">添加到...</a>
+          <a style="margin-left: 10px; user-select: none;" @click="addto().addDownloader(record.title)">添加到...</a>
           <a style="margin-left: 10px; user-select: none;" @click="list().minus_one(record)">
             <i class="bi bi-dash-circle-fill"></i>
           </a>
@@ -105,6 +104,20 @@
       </div>
     </div>
   </a-modal>
+  <a-modal v-model:open="addto().showAddBangumiDialog" title="添加一个番剧" @ok="addto().addBangumiOk" @cancel="addto().onDialogCancel" centered>
+    <div class="bangumiItem" style="margin-top: 10px;">
+      <div class="bangumiItem_title">字幕组</div>
+      <div class="bangumiItem_content">
+        <a-input v-model:value="addto().bangumiAddAss"></a-input>
+      </div>
+    </div>
+    <div class="bangumiItem" style="margin-top: 10px;">
+      <div class="bangumiItem_title">标题</div>
+      <div class="bangumiItem_content">
+        <a-input v-model:value="addto().bangumiAddTitle"></a-input>
+      </div>
+    </div>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -119,16 +132,12 @@ import adder from '@/stores/adder';
 import list from '@/stores/list';
 import token from '@/stores/token';
 import variables from '@/stores/variables';
+import addto from '@/stores/addto';
 import type { BangumiItem } from '../bangumi/BangumiView.vue';
 import { analyseEpisode, calculateEpisodesReleased } from '@/stores/cal';
 
 document.title="AnimeHelper | 列表";
 
-
-// let onsearch=ref(false);
-// let searchRlt=ref<BangumiItem[]>([]);
-
-// let searchKey=ref("");
 
 const searchRef=ref<any>(null);
 
@@ -140,7 +149,6 @@ window.addEventListener("keydown", (event)=>{
     }
   }
 })
-
 
 const del_item=(item: BangumiItem)=>{
   Modal.confirm({
