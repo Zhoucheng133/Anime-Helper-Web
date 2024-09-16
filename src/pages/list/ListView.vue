@@ -44,7 +44,7 @@
     </a-table>
   </div>
   <InnerLoadingView v-else></InnerLoadingView>
-  <a-modal v-model:open="adder().showAdd" title="添加一个新的番剧" @ok="adder().handleOk" centered>
+  <a-modal v-model:open="adder().showAdd" title="添加到下载器" @ok="adder().handleOk" centered>
     <div class="modalContent">
       <a-input placeholder="番剧标题" v-model:value="adder().add_title"></a-input>
       <a-checkbox style="margin-top: 10px;" v-model:checked="adder().add_onUpdate" @change="adder().changeUpdate">当前在更新</a-checkbox>
