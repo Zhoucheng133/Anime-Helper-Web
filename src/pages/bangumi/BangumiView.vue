@@ -121,18 +121,18 @@ export interface BangumiItem{
 onMounted(async ()=>{
   token().getToken();
   // 下面是正式内容
-  // const response=(await axios.get(`${baseURL}/api/calendar`, {
-  //   headers: {
-  //     token: localStorage.getItem("token")
-  //   }
-  // })).data
-  // if(response.ok){
-  //   list.value=response.msg;
-  // }else{
-  //   message.error("请求失败")
-  // }
+  const response=(await axios.get(`${baseURL}/api/calendar`, {
+    headers: {
+      token: localStorage.getItem("token")
+    }
+  })).data
+  if(response.ok){
+    list.value=response.msg;
+  }else{
+    message.error("请求失败")
+  }
   // 下面这行是测试用代码
-  list.value=testData;
+  // list.value=testData;
   // END
 
   if(ls().dataSource.length==0){
