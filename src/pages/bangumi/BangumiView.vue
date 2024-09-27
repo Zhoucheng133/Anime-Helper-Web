@@ -76,7 +76,7 @@
 import Header from '@/components/Header.vue';
 import InnerLoadingView from '../loading/InnerLoadingView.vue';
 import { onMounted, ref } from 'vue';
-import { testData } from '@/test/bangumi';
+// import { testData } from '@/test/bangumi';
 import token from '@/stores/token';
 import adder from '@/stores/adder';
 import axios from 'axios';
