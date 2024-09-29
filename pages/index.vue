@@ -1,10 +1,11 @@
 <template>
+  <PageHeader class="header" :login="true" :page-name="'list'" />
   <div>
-    <a-button>hello!</a-button>
   </div>
 </template>
 
 <script setup lang="ts">
+import PageHeader from '~/components/PageHeader.vue';
 
 useHead({
   title: 'AnimeHelper | 列表'
