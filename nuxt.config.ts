@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   css: [
-    'bootstrap-icons/font/bootstrap-icons.css'
+    'bootstrap-icons/font/bootstrap-icons.css',
+    '~/style/global.css'
   ],
   app: {
     head: {
