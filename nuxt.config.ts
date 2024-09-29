@@ -8,5 +8,12 @@ export default defineNuxtConfig({
   ],
   css: [
     'bootstrap-icons/font/bootstrap-icons.css'
-  ]
+  ],
+  app: {
+    head: {
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "icon.svg" }
+      ]
+    }
+  }
 })
