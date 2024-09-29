@@ -31,7 +31,7 @@ const router=useRouter();
 const logoutHandler=()=>{
   let token=useCookie('token');
   token.value=null;
-  router.push("/login");
+  window.location.href='/login';
 }
 
 // 页面跳转
@@ -39,7 +39,7 @@ const link=(path: string)=>{
   if(props.pageName===path){
     return;
   }
-  router.push(`/${path}`);
+  window.location.href=`/${path}`;
 }
 
 // 菜单判定

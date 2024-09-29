@@ -36,7 +36,9 @@ const {data: response}=await useAsyncData(async ()=>{
 })
 
 if(response.value){
-  router.push("/register");
+  onMounted(()=>{
+    window.location.href='/register';
+  })
 }
 
 

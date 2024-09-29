@@ -21,12 +21,17 @@ if(token.value){
     })).data;
   })
   if(response.value.ok){
-    router.push("/list");
+    onMounted(()=>{
+      window.location.href='/list';
+    })
   }else{
-    // token.value=null
-    router.push("/login");
+    onMounted(()=>{
+      window.location.href='/login';
+    })
   }
 }else{
-  router.push("/login");
+  onMounted(()=>{
+    window.location.href='/login';
+  })
 }
 </script>
