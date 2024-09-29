@@ -23,9 +23,8 @@
 <script setup lang="ts">
 import axios from 'axios';
 import PageHeader from '~/components/PageHeader.vue';
-import { ssrHost } from '~/store/network';
+import { reqHost, ssrHost } from '~/store/network';
 
-const router=useRouter();
 
 useHead({
   title: 'AnimeHelper | 登录'
@@ -45,8 +44,28 @@ if(response.value){
 let username=ref("");
 let password=ref("");
 
-const loginHandler=()=>{
-  // TODO 登录
+const loginHandler=async ()=>{
+  if(username.value.length==0){
+    message.error("用户名不能为空");
+    return;
+  }else if(password.value.length==0){
+    message.error("密码不能为空");
+    return;
+  }
+  const response=(await axios.post(`${reqHost}/api/login`, {
+    username: username.value,
+    password: password.value,
+  })).data;
+
+  if(response.ok){
+    // localStorage.setItem("token", response.msg);
+    let token=useCookie("token");
+    token.value=response.msg;
+    window.location.href='/list';
+  }else{
+    message.error(`登录失败: ${response.msg}`);
+  }
+  
 }
 
 </script>
