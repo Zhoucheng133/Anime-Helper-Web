@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ssrHost } from "~/store/network";
+import { ssrHost } from "./network";
 
 export default async function(): Promise<boolean>{
   const token=useCookie('token');

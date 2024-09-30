@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import axios from 'axios';
 import PageHeader from '~/components/PageHeader.vue';
-import { reqHost, ssrHost } from '~/store/network';
+import { reqHost, ssrHost } from '~/hooks/network';
 
 
 useHead({

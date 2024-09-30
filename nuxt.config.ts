@@ -17,7 +17,4 @@ export default defineNuxtConfig({
       ]
     }
   },
-  router: {
-    
-  }
 })
