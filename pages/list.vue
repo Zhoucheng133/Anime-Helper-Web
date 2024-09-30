@@ -1,48 +1,85 @@
 <template>
-  <PageHeader class="header" :login="true" :page-name="'list'" />
-  <div class="body">
-    <a-table :dataSource="list" :columns="listColumn" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'progress'">
-          <a-progress :percent="record.now/analyseEpisode(record as BangumiItem)*100" :showInfo="false" />
+  <a-config-provider :locale="locale">
+    <PageHeader class="header" :login="true" :page-name="'list'" />
+    <div class="body">
+      <div class="toolbar">
+
+      </div>
+      <a-table :dataSource="list" :columns="listColumn" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'progress'">
+            <a-progress :percent="record.now/analyseEpisode(record as BangumiItem)*100" :showInfo="false" />
+          </template>
+          <template v-else-if="column.key === 'op'">
+            <a style="user-select: none;" @click="openEdit(record as BangumiItem)">编辑</a>
+            <a style="margin-left: 10px; user-select: none;" @click="addDownloader(record.title)">添加到...</a>
+            <a style="margin-left: 10px; user-select: none;" @click="minusOne(record as BangumiItem)">
+              <i class="bi bi-dash-circle-fill"></i>
+            </a>
+            <a style="margin-left: 10px; user-select: none;" @click="addOne(record as BangumiItem)">
+              <i class="bi bi-plus-circle-fill"></i>
+            </a>
+            <a style="margin-left: 10px; user-select: none;" @click="delItem(record as BangumiItem)">
+              <i class="bi bi-trash3-fill"></i>
+            </a>
+          </template>
+          <template v-if="column.key === 'status'">
+            <a-tag color="green" v-if="calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
+            <a-tag v-else style="user-select: none;">已完结</a-tag>
+          </template>
+          <template v-else-if="column.key === 'title'">
+            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
+          </template>
+          <template v-else-if="column.key === 'episode'" >
+            <div style="user-select: none;">
+              {{ analyseEpisode(record as BangumiItem) }}
+            </div>
+          </template>
+          <template v-else-if="column.key === 'now'" >
+            <div style="user-select: none;">
+              {{ record.now }}
+            </div>
+          </template>
         </template>
-        <template v-else-if="column.key === 'op'">
-          <a style="user-select: none;" @click="openEdit(record as BangumiItem)">编辑</a>
-          <a style="margin-left: 10px; user-select: none;" @click="addDownloader(record.title)">添加到...</a>
-          <a style="margin-left: 10px; user-select: none;" @click="minus_one(record as BangumiItem)">
-            <i class="bi bi-dash-circle-fill"></i>
-          </a>
-          <a style="margin-left: 10px; user-select: none;" @click="add_one(record as BangumiItem)">
-            <i class="bi bi-plus-circle-fill"></i>
-          </a>
-          <a style="margin-left: 10px; user-select: none;" @click="del_item(record as BangumiItem)">
-            <i class="bi bi-trash3-fill"></i>
-          </a>
-        </template>
-        <template v-if="column.key === 'status'">
-          <a-tag color="green" v-if="calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
-          <a-tag v-else style="user-select: none;">已完结</a-tag>
-        </template>
-        <template v-else-if="column.key === 'title'">
-          <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
-        </template>
-        <template v-else-if="column.key === 'episode'" >
-          <div style="user-select: none;">
-            {{ analyseEpisode(record as BangumiItem) }}
+      </a-table>
+      <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
+        <div class="modalContent">
+          <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
+          <a-checkbox style="margin-top: 10px;" v-model:checked="editItem.onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
+          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
+            <div style="margin-right: 10px;">集数</div>
+            <a-input-number v-model:value="editItem.episodes" :min="1"></a-input-number>
           </div>
-        </template>
-        <template v-else-if="column.key === 'now'" >
-          <div style="user-select: none;">
-            {{ record.now }}
+          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
+            <div style="margin-right: 10px;">观看至</div>
+            <a-input-number v-model:value="editItem.now" :min="0" :max="judgeEdit()"></a-input-number>
           </div>
-        </template>
-      </template>
-    </a-table>
-  </div>
+          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="editItem.onUpdate">
+            <div style="margin-right: 10px;">更新至</div>
+            <a-input-number v-model:value="editItem.updateTo" :min="1" :max="editItem?.episodes"></a-input-number>
+          </div>
+          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="editItem.onUpdate">
+            <div style="margin-right: 10px;">更新日期</div>
+            <a-select v-model:value="editItem.weekday">
+              <a-select-option :value="0">星期日</a-select-option>
+              <a-select-option :value="1">星期一</a-select-option>
+              <a-select-option :value="2">星期二</a-select-option>
+              <a-select-option :value="3">星期三</a-select-option>
+              <a-select-option :value="4">星期四</a-select-option>
+              <a-select-option :value="5">星期五</a-select-option>
+              <a-select-option :value="6">星期六</a-select-option>
+            </a-select>
+          </div>
+        </div>
+      </a-modal>
+    </div>
+  </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
+import { analyseEpisode, calculateEpisodesReleased } from '~/hooks/cals';
+import { type EditItem, editOk } from '~/hooks/edit';
 import init from '~/hooks/init';
 import { initList, type BangumiItem, listColumn, changeItem, getList } from '~/hooks/list';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
@@ -78,7 +115,7 @@ const delItem=(record: BangumiItem)=>{
   });
 }
 
-const add_one=async (record: BangumiItem)=>{
+const addOne=async (record: BangumiItem)=>{
   if(record.now>=analyseEpisode(record)){
     return;
   }
@@ -93,7 +130,7 @@ const add_one=async (record: BangumiItem)=>{
   }
 }
 
-const minus_one=async (record: BangumiItem)=>{
+const minusOne=async (record: BangumiItem)=>{
   if(record.now==0){
     return;
   }
@@ -112,14 +149,53 @@ const addDownloader=(title: string)=>{
 
 }
 
-const openEdit=(record: BangumiItem)=>{
+const onEditOk=async ()=>{
+  if(await editOk(editItem.value)){
+    showEdit.value=false;
+    list.value=await getList();
+    return;
+  }
+  message.error("编辑失败");
+}
 
+const openEdit=(record: BangumiItem)=>{
+  showEdit.value=true;
+  editItem.value={
+    title: record.title,
+    onUpdate: calculateEpisodesReleased(record.time)<record.episode,
+    episodes: record.episode,
+    now: record.now,
+    updateTo: analyseEpisode(record as BangumiItem),
+    weekday: new Date(record.time).getDay(),
+    id: record.id,
+  };
+}
+
+const judgeEdit=()=>{
+  if(editItem.value.onUpdate){
+    return editItem.value.episodes>editItem.value.updateTo?editItem.value.updateTo:editItem.value.episodes;
+  }else{
+    return editItem.value.episodes;
+  }
+}
+
+const changeUpdate=()=>{
+  editItem.value.now=1;
 }
 
 let list=ref<BangumiItem[]>([]);
 let showEdit=ref(false);
 let showAdd=ref(false);
 let showDownloader=ref(false);
+let editItem=ref<EditItem>({
+  title: '',
+  onUpdate: false,
+  episodes: 0,
+  now: 0,
+  updateTo: 0,
+  weekday: 0,
+  id: ''
+})
 
 useHead({
   title: 'AnimeHelper | 列表'

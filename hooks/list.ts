@@ -1,5 +1,6 @@
 import axios from "axios"
 import { reqHost, ssrHost } from "./network"
+import { analyseEpisode, calculateEpisodesReleased } from "./cals";
 
 export interface BangumiItem{
   id: string,
@@ -7,24 +8,6 @@ export interface BangumiItem{
   episode: number,
   now: number,
   time: number
-}
-
-// 判定是否实际上显示多少集
-export function analyseEpisode(item: BangumiItem){
-  if(item.time==0){
-    return item.episode;
-  }
-  return calculateEpisodesReleased(item.time)>item.episode?item.episode:calculateEpisodesReleased(item.time);
-}
-
-// 计算截至到今天的已更新集数
-export function calculateEpisodesReleased(firstEpisodeTimestamp: number): number {
-  const tmp = new Date();
-  const currentDate = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate());
-  const difference = currentDate.getTime() - firstEpisodeTimestamp;
-  const daysPassed=Math.floor(difference / (1000 * 60 * 60 * 24));
-  const weeksPassed = Math.floor(daysPassed / 7);
-  return Math.max(weeksPassed, 0) + 1;
 }
 
 // 获取列表
