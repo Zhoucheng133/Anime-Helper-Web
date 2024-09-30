@@ -44,10 +44,38 @@
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
 import init from '~/hooks/init';
-import { initList, type BangumiItem, listColumn, analyseEpisode, calculateEpisodesReleased, changeItem, getList } from '~/hooks/list';
-
-const del_item=(record: BangumiItem)=>{
-
+import { initList, type BangumiItem, listColumn, changeItem, getList } from '~/hooks/list';
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import axios from 'axios';
+import { reqHost } from '~/hooks/network';
+const locale=zhCN;
+const delItem=(record: BangumiItem)=>{
+  const token=useCookie('token');
+  if(!token.value){
+    return;
+  }
+  Modal.confirm({
+    title: "删除项",
+    content: `你确定要删除:《${record.title}》吗`,
+    centered: true,
+    okText: '删除',
+    cancelText: '取消',
+    async onOk() {
+      const response=(await axios.post(`${reqHost}/api/dellist`, {
+        id: record.id
+      }, {
+        headers: {
+          token: token.value,
+        }
+      })).data;
+      if(response.ok){
+        message.success("删除成功")
+        list.value=await getList();
+      }else{
+        message.error("删除失败: "+response.msg);
+      }
+    },
+  });
 }
 
 const add_one=async (record: BangumiItem)=>{
