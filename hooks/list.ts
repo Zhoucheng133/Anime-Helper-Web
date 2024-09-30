@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ssrHost } from "./network"
+import { reqHost, ssrHost } from "./network"
 
 export interface BangumiItem{
   id: string,
@@ -28,9 +28,26 @@ export function calculateEpisodesReleased(firstEpisodeTimestamp: number): number
 }
 
 // 获取列表
-export async function getList(): Promise<BangumiItem[]>{
+export const getList=async (): Promise<BangumiItem[]>=>{
   const token=useCookie('token');
-  if(!token){
+  if(!token.value){
+    return [];
+  }
+  const data = (await axios.get(`${ssrHost}/api/list`, {
+    headers: {
+      token: token.value,
+    }
+  })).data;
+  if(data.ok){
+    return data.msg.reverse();
+  }
+  return [];
+}
+
+// 获取列表
+export async function initList(): Promise<BangumiItem[]>{
+  const token=useCookie('token');
+  if(!token.value){
     return [];
   }
   const {data: response}=await useAsyncData(async ()=>{
@@ -47,6 +64,28 @@ export async function getList(): Promise<BangumiItem[]>{
   return response.value;
 }
 
+// 修改项目
+export const changeItem=async (item: BangumiItem): Promise<boolean>=>{
+  const token=useCookie('token');
+  if(!token.value){
+    return false;
+  }
+  const response=(await axios.post(`${reqHost}/api/changeitem`, {
+    data: item,
+  }, {
+    headers: {
+      token: token.value
+    }
+  })).data;
+  if(response.ok){
+    return true;
+  }else{
+    message.error("修改参数失败: "+response.msg);
+    return false;
+  }
+}
+
+// 表头
 export const listColumn: any=[
   {
     title: '标题',

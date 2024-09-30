@@ -44,18 +44,40 @@
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
 import init from '~/hooks/init';
-import { getList, type BangumiItem, listColumn, analyseEpisode, calculateEpisodesReleased } from '~/hooks/list';
+import { initList, type BangumiItem, listColumn, analyseEpisode, calculateEpisodesReleased, changeItem, getList } from '~/hooks/list';
 
 const del_item=(record: BangumiItem)=>{
 
 }
 
-const add_one=(record: BangumiItem)=>{
-
+const add_one=async (record: BangumiItem)=>{
+  if(record.now>=analyseEpisode(record)){
+    return;
+  }
+  const index=list.value.findIndex((i)=>record.id==i.id);  
+  if(index==-1){
+    return;
+  }else{
+    list.value[index].now=list.value[index].now+1;
+    if(await changeItem(list.value[index])){
+      list.value=await getList();
+    }
+  }
 }
 
-const minus_one=(record: BangumiItem)=>{
-
+const minus_one=async (record: BangumiItem)=>{
+  if(record.now==0){
+    return;
+  }
+  const index=list.value.findIndex((i)=>record.id==i.id);
+  if(index==-1){
+    return;
+  }else{
+    list.value[index].now=list.value[index].now-1;
+    if(await changeItem(list.value[index])){
+      list.value=await getList();
+    }
+  }
 }
 
 const addDownloader=(title: string)=>{
@@ -81,7 +103,7 @@ if(!islogin){
     window.location.href='/login';
   })
 }else{
-  list.value=await getList();
+  list.value=await initList();
 }
 
 </script>
