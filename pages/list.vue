@@ -3,6 +3,7 @@
     <PageHeader class="header" :login="true" :page-name="'list'" />
     <div class="body">
       <div class="toolbar">
+        <UButton style="margin-right: 10px;" @click="openAdd">添加</UButton>
         <USelectMenu v-model="filterType" :options="typs" />
       </div>
       <UTable :rows="filter" :columns="listColumn">
@@ -20,7 +21,7 @@
           <div style="width: 120px;"><UProgress :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
         </template>
         <template #op-data="{ row }">
-          <ULink @click="openEdit(row as BangumiItem)">编辑</ULink>
+          <ULink @click="openEdit(row as BangumiItem)" style="user-select: none;">编辑</ULink>
           <ULink style="margin-left: 10px; user-select: none;" @click="addDownloader(row.title)">添加到...</ULink>
           <ULink style="margin-left: 10px; user-select: none;" @click="minusOne(row as BangumiItem)">
             <i class="bi bi-dash-circle-fill"></i>
@@ -33,25 +34,25 @@
           </ULink>
         </template>
       </UTable>
-      <!-- <a-modal v-model:open="adder().showAdd" title="添加" @ok="adder().handleOk" centered>
+      <a-modal v-model:open="showAdd" title="添加" @ok="onAddOk" centered>
         <div class="modalContent">
-          <a-input placeholder="番剧标题" v-model:value="adder().add_title"></a-input>
-          <a-checkbox style="margin-top: 10px;" v-model:checked="adder().add_onUpdate" @change="adder().changeUpdate">当前在更新</a-checkbox>
+          <a-input placeholder="番剧标题" v-model:value="addItem.title"></a-input>
+          <a-checkbox style="margin-top: 10px;" v-model:checked="addItem.onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
           <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
             <div style="margin-right: 10px;">集数</div>
-            <a-input-number v-model:value="adder().add_episodes" :min="1"></a-input-number>
+            <a-input-number v-model:value="addItem.episodes" :min="1"></a-input-number>
           </div>
           <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
             <div style="margin-right: 10px;">观看至</div>
-            <a-input-number v-model:value="adder().add_now" :min="0" :max="adder().judge()"></a-input-number>
+            <a-input-number v-model:value="addItem.now" :min="0" :max="judgeAdd()"></a-input-number>
           </div>
-          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="adder().add_onUpdate">
+          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="addItem.onUpdate">
             <div style="margin-right: 10px;">更新至</div>
-            <a-input-number v-model:value="adder().add_updateTo" :min="1" :max="adder().add_episodes"></a-input-number>
+            <a-input-number v-model:value="addItem.updateTo" :min="1" :max="addItem.episodes"></a-input-number>
           </div>
-          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="adder().add_onUpdate">
+          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="addItem.onUpdate">
             <div style="margin-right: 10px;">更新日期</div>
-            <a-select v-model:value="adder().add_weekday">
+            <a-select v-model:value="addItem.weekday">
               <a-select-option :value="0">星期日</a-select-option>
               <a-select-option :value="1">星期一</a-select-option>
               <a-select-option :value="2">星期二</a-select-option>
@@ -62,7 +63,7 @@
             </a-select>
           </div>
         </div>
-      </a-modal> -->
+      </a-modal>
       <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
         <div class="modalContent">
           <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
@@ -106,10 +107,42 @@ import { initList, type BangumiItem, listColumn, changeItem, getList } from '~/h
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import axios from 'axios';
 import { reqHost } from '~/hooks/network';
+import { addOk } from '~/hooks/add';
 const locale=zhCN;
 
 let filterType=ref('进行中');
-const typs=['所有', '进行中', '更新中', '已完结', '已看完']
+const typs=['所有', '进行中', '更新中', '已完结', '已看完'];
+
+let addItem=ref<EditItem>({
+  title: '',
+  onUpdate: false,
+  episodes: 1,
+  now: 0,
+  updateTo: 0,
+  weekday: 0,
+  id: ''
+})
+
+const openAdd=()=>{
+  showAdd.value=true;
+}
+
+const onAddOk=async ()=>{
+  if(await addOk(addItem.value)){
+    showAdd.value=false;
+    list.value=await getList();
+    addItem.value={
+      title: '',
+      onUpdate: false,
+      episodes: 1,
+      now: 0,
+      updateTo: 0,
+      weekday: 0,
+      id: ''
+    }
+    return;
+  }
+}
 
 let filter=computed(()=>{
   if(filterType.value=='所有'){
@@ -219,6 +252,14 @@ const openEdit=(record: BangumiItem)=>{
   };
 }
 
+const judgeAdd=()=>{
+  if(addItem.value.onUpdate){
+    return addItem.value.episodes>addItem.value.updateTo?addItem.value.updateTo:addItem.value.episodes;
+  }else{
+    return addItem.value.episodes;
+  }
+}
+
 const judgeEdit=()=>{
   if(editItem.value.onUpdate){
     return editItem.value.episodes>editItem.value.updateTo?editItem.value.updateTo:editItem.value.episodes;
@@ -229,6 +270,7 @@ const judgeEdit=()=>{
 
 const changeUpdate=()=>{
   editItem.value.now=1;
+  addItem.value.now=1;
 }
 
 let list=ref<BangumiItem[]>([]);
