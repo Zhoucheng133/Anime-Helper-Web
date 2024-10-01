@@ -28,8 +28,41 @@
           <ULink style="margin-left: 10px; user-select: none;" @click="addOne(row as BangumiItem)">
             <i class="bi bi-plus-circle-fill"></i>
           </ULink>
+          <ULink style="margin-left: 10px; user-select: none;" @click="delItem(row as BangumiItem)">
+            <i class="bi bi-trash3-fill"></i>
+          </ULink>
         </template>
       </UTable>
+      <!-- <a-modal v-model:open="adder().showAdd" title="添加" @ok="adder().handleOk" centered>
+        <div class="modalContent">
+          <a-input placeholder="番剧标题" v-model:value="adder().add_title"></a-input>
+          <a-checkbox style="margin-top: 10px;" v-model:checked="adder().add_onUpdate" @change="adder().changeUpdate">当前在更新</a-checkbox>
+          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
+            <div style="margin-right: 10px;">集数</div>
+            <a-input-number v-model:value="adder().add_episodes" :min="1"></a-input-number>
+          </div>
+          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
+            <div style="margin-right: 10px;">观看至</div>
+            <a-input-number v-model:value="adder().add_now" :min="0" :max="adder().judge()"></a-input-number>
+          </div>
+          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="adder().add_onUpdate">
+            <div style="margin-right: 10px;">更新至</div>
+            <a-input-number v-model:value="adder().add_updateTo" :min="1" :max="adder().add_episodes"></a-input-number>
+          </div>
+          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="adder().add_onUpdate">
+            <div style="margin-right: 10px;">更新日期</div>
+            <a-select v-model:value="adder().add_weekday">
+              <a-select-option :value="0">星期日</a-select-option>
+              <a-select-option :value="1">星期一</a-select-option>
+              <a-select-option :value="2">星期二</a-select-option>
+              <a-select-option :value="3">星期三</a-select-option>
+              <a-select-option :value="4">星期四</a-select-option>
+              <a-select-option :value="5">星期五</a-select-option>
+              <a-select-option :value="6">星期六</a-select-option>
+            </a-select>
+          </div>
+        </div>
+      </a-modal> -->
       <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
         <div class="modalContent">
           <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
