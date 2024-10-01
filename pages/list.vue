@@ -23,7 +23,7 @@
         </template>
         <template #op-data="{ row }">
           <ULink @click="openEdit(row as BangumiItem)" style="user-select: none;">编辑</ULink>
-          <ULink style="margin-left: 10px; user-select: none;" @click="addDownloader(row.title)">添加到...</ULink>
+          <ULink style="margin-left: 10px; user-select: none;" @click="openDownloader(row.title)">添加到...</ULink>
           <ULink style="margin-left: 10px; user-select: none;" @click="minusOne(row as BangumiItem)">
             <i class="bi bi-dash-circle-fill"></i>
           </ULink>
@@ -95,6 +95,20 @@
           </div>
         </div>
       </a-modal>
+      <a-modal v-model:open="showDownloader" title="添加一个番剧" @ok="onDownloaderOk" centered>
+        <div class="bangumiItem" style="margin-top: 10px;">
+          <div class="bangumiItem_title">字幕组</div>
+          <div class="bangumiItem_content">
+            <a-input v-model:value="downloaderItem.ass"></a-input>
+          </div>
+        </div>
+        <div class="bangumiItem" style="margin-top: 10px;">
+          <div class="bangumiItem_title">标题</div>
+          <div class="bangumiItem_content">
+            <a-input v-model:value="downloaderItem.title"></a-input>
+          </div>
+        </div>
+      </a-modal>
     </div>
   </a-config-provider>
 </template>
@@ -109,11 +123,28 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import axios from 'axios';
 import { reqHost } from '~/hooks/network';
 import { addOk } from '~/hooks/add';
+import { onAddDownloaderOk, type DownloaderItem } from '~/hooks/adddownloader';
 const locale=zhCN;
 
 let filterType=ref('进行中');
 const typs=['所有', '进行中', '更新中', '已完结', '已看完', '搜索'];
 let searchKey=ref('');
+
+const onDownloaderOk=async ()=>{
+  if(await onAddDownloaderOk(downloaderItem.value)){
+    showDownloader.value=false;
+    downloaderItem.value={
+      title: '',
+      ass: ''
+    }
+    return;
+  }
+}
+
+let downloaderItem=ref<DownloaderItem>({
+  title: '',
+  ass: ''
+})
 
 let addItem=ref<EditItem>({
   title: '',
@@ -231,8 +262,9 @@ const minusOne=async (record: BangumiItem)=>{
   }
 }
 
-const addDownloader=(title: string)=>{
-
+const openDownloader=(title: string)=>{
+  downloaderItem.value.title=title;
+  showDownloader.value=true;
 }
 
 const onEditOk=async ()=>{
