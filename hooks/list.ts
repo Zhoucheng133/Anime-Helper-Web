@@ -1,6 +1,5 @@
 import axios from "axios"
 import { reqHost, ssrHost } from "./network"
-import { analyseEpisode, calculateEpisodesReleased } from "./cals";
 
 export interface BangumiItem{
   id: string,
@@ -82,23 +81,6 @@ export const listColumn: any=[
     dataIndex: 'status',
     key: 'status',
     width: 70,
-    filters: [
-      {
-        text: '更新中',
-        value: 'onUpdate',
-      },
-      {
-        text: '已完结',
-        value: 'finished'
-      }
-    ],
-    onFilter: (value: string, record: BangumiItem)=>{
-      if(value=="onUpdate"){
-        return calculateEpisodesReleased(record.time)<record.episode;
-      }else{
-        return calculateEpisodesReleased(record.time)>=record.episode
-      }
-    },
   },
   {
     title: "集数",
@@ -117,23 +99,6 @@ export const listColumn: any=[
     dataIndex: 'progress',
     key: 'progress',
     width: 100,
-    filters: [
-      {
-        text: '进行中',
-        value: 'onProgress',
-      },
-      {
-        text: '已看完',
-        value: 'finished'
-      }
-    ],
-    onFilter: (value: string, record: BangumiItem)=>{
-      if(value=="onProgress"){
-        return record.now/analyseEpisode(record)<1;
-      }else{
-        return  record.now/analyseEpisode(record)>=1
-      }
-    },
   },
   {
     title: "操作",
