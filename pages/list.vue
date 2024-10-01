@@ -5,8 +5,9 @@
       <div class="toolbar">
         <UButton style="margin-right: 10px;" @click="openAdd">添加</UButton>
         <USelectMenu v-model="filterType" :options="typs" />
+        <UInput style="margin-left: 10px;" v-model="searchKey" :disabled="filterType!='搜索'"></UInput>
       </div>
-      <UTable :rows="filter" :columns="listColumn">
+      <UTable :rows="filter" :columns="listColumn" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }">
         <template #status-data="{ row }">
           <UBadge color="green" v-if="calculateEpisodesReleased(row.time)<row.episode">更新中</UBadge>
           <UBadge color="gray" v-else>已完结</UBadge>
@@ -111,7 +112,8 @@ import { addOk } from '~/hooks/add';
 const locale=zhCN;
 
 let filterType=ref('进行中');
-const typs=['所有', '进行中', '更新中', '已完结', '已看完'];
+const typs=['所有', '进行中', '更新中', '已完结', '已看完', '搜索'];
+let searchKey=ref('');
 
 let addItem=ref<EditItem>({
   title: '',
@@ -163,8 +165,11 @@ let filter=computed(()=>{
     return list.value.filter((item)=>{
       return calculateEpisodesReleased(item.time)>=item.episode && item.now==item.episode;
     });
+  }else if(filterType.value=='搜索'){
+    return list.value.filter((item)=>{
+      return item.title.includes(searchKey.value);
+    })
   }
-  return [];
 })
 
 const delItem=(record: BangumiItem)=>{
