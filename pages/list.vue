@@ -3,45 +3,33 @@
     <PageHeader class="header" :login="true" :page-name="'list'" />
     <div class="body">
       <div class="toolbar">
-        
+        <USelectMenu v-model="filterType" :options="typs" />
       </div>
-      <a-table :dataSource="filter" :columns="listColumn" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'progress'">
-            <a-progress :percent="record.now/analyseEpisode(record as BangumiItem)*100" :showInfo="false" />
-          </template>
-          <template v-else-if="column.key === 'op'">
-            <a style="user-select: none;" @click="openEdit(record as BangumiItem)">编辑</a>
-            <a style="margin-left: 10px; user-select: none;" @click="addDownloader(record.title)">添加到...</a>
-            <a style="margin-left: 10px; user-select: none;" @click="minusOne(record as BangumiItem)">
-              <i class="bi bi-dash-circle-fill"></i>
-            </a>
-            <a style="margin-left: 10px; user-select: none;" @click="addOne(record as BangumiItem)">
-              <i class="bi bi-plus-circle-fill"></i>
-            </a>
-            <a style="margin-left: 10px; user-select: none;" @click="delItem(record as BangumiItem)">
-              <i class="bi bi-trash3-fill"></i>
-            </a>
-          </template>
-          <template v-if="column.key === 'status'">
-            <a-tag color="green" v-if="calculateEpisodesReleased(record.time)<record.episode" style="user-select: none;">更新中</a-tag>
-            <a-tag v-else style="user-select: none;">已完结</a-tag>
-          </template>
-          <template v-else-if="column.key === 'title'">
-            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ record.title }}</div>
-          </template>
-          <template v-else-if="column.key === 'episode'" >
-            <div style="user-select: none;">
-              {{ analyseEpisode(record as BangumiItem) }}
-            </div>
-          </template>
-          <template v-else-if="column.key === 'now'" >
-            <div style="user-select: none;">
-              {{ record.now }}
-            </div>
-          </template>
+      <UTable :rows="filter" :columns="listColumn">
+        <template #status-data="{ row }">
+          <UBadge color="green" v-if="calculateEpisodesReleased(row.time)<row.episode">更新中</UBadge>
+          <UBadge color="gray" v-else>已完结</UBadge>
         </template>
-      </a-table>
+        <template #title-data="{ row }">
+          <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ row.title }}</div>
+        </template>
+        <template #episode-data="{ row }">
+          <div>{{ analyseEpisode(row as BangumiItem) }}</div>
+        </template>
+        <template #progress-data="{ row }">
+          <div style="width: 120px;"><UProgress :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
+        </template>
+        <template #op-data="{ row }">
+          <ULink @click="openEdit(row as BangumiItem)">编辑</ULink>
+          <ULink style="margin-left: 10px; user-select: none;" @click="addDownloader(row.title)">添加到...</ULink>
+          <ULink style="margin-left: 10px; user-select: none;" @click="minusOne(row as BangumiItem)">
+            <i class="bi bi-dash-circle-fill"></i>
+          </ULink>
+          <ULink style="margin-left: 10px; user-select: none;" @click="addOne(row as BangumiItem)">
+            <i class="bi bi-plus-circle-fill"></i>
+          </ULink>
+        </template>
+      </UTable>
       <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
         <div class="modalContent">
           <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
@@ -87,24 +75,25 @@ import axios from 'axios';
 import { reqHost } from '~/hooks/network';
 const locale=zhCN;
 
-let filterType=ref('progress');
+let filterType=ref('进行中');
+const typs=['所有', '进行中', '更新中', '已完结', '已看完']
 
 let filter=computed(()=>{
-  if(filterType.value=='all'){
+  if(filterType.value=='所有'){
     return list.value;
-  }else if(filterType.value=='progress'){
+  }else if(filterType.value=='进行中'){
     return list.value.filter((item)=>{
       return !(calculateEpisodesReleased(item.time)>=item.episode && item.now==item.episode);
     })
-  }else if(filterType.value=='onUpdate'){
+  }else if(filterType.value=='更新中'){
     return list.value.filter((item)=>{
       return calculateEpisodesReleased(item.time)<item.episode
     });
-  }else if(filterType.value=='end'){
+  }else if(filterType.value=='已完结'){
     return list.value.filter((item)=>{
       return calculateEpisodesReleased(item.time)>=item.episode
     });
-  }else if(filterType.value=='finished'){
+  }else if(filterType.value=='已看完'){
     return list.value.filter((item)=>{
       return calculateEpisodesReleased(item.time)>=item.episode && item.now==item.episode;
     });
@@ -241,5 +230,6 @@ if(!islogin){
 <style>
 .toolbar{
   margin-bottom: 10px;
+  display: flex;
 }
 </style>

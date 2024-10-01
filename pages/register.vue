@@ -7,15 +7,15 @@
         <div class="panelSubTitle">Hi, 从这里开始吧👋</div>
         <div class="item">
           <div class="itemLabel">用户名</div>
-          <a-input size="large" v-model:value="username"></a-input>
+          <UInput size="lg" v-model="username"></UInput>
         </div>
         <div class="item">
           <div class="itemLabel">密码</div>
-          <a-input-password size="large" v-model:value="password"></a-input-password>
+          <UInput size="lg" type="password" v-model="password"></UInput>
         </div>
         <div class="item">
           <div class="itemLabel">重复密码</div>
-          <a-input-password size="large" v-model:value="password_again" @pressEnter="register"></a-input-password>
+          <UInput size="lg" type="password" v-model="password_again"></UInput>
         </div>
         <div class="loginButton" @click="register">注册</div>
       </div>

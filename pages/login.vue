@@ -7,11 +7,11 @@
         <div class="panelSubTitle">Hi, 欢迎回来👋</div>
         <div class="item">
           <div class="itemLabel">用户名</div>
-          <a-input size="large" v-model:value="username"></a-input>
+          <UInput size="lg" v-model="username"></UInput>
         </div>
         <div class="item">
           <div class="itemLabel">密码</div>
-          <a-input-password size="large" v-model:value="password" @pressEnter="loginHandler"></a-input-password>
+          <UInput size="lg" type="password" v-model="password" @pressEnter="loginHandler"></UInput>
         </div>
         <div class="loginButton" @click="loginHandler">登录</div>
       </div>

@@ -70,40 +70,27 @@ export const changeItem=async (item: BangumiItem): Promise<boolean>=>{
 // 表头
 export const listColumn: any=[
   {
-    title: '标题',
-    dataIndex: 'title',
+    label: '标题',
     key: 'title',
-    fixed: 'left',
-    width: 150,
   },
   {
-    title: "状态",
-    dataIndex: 'status',
+    label: "状态",
     key: 'status',
-    width: 70,
   },
   {
-    title: "集数",
-    dataIndex: 'episode',
+    label: "集数",
     key: 'episode',
-    width: 70,
   },
   {
-    title: "看至",
-    dataIndex: 'now',
+    label: "看至",
     key: 'now',
-    width: 70,
   },
   {
-    title: "进度",
-    dataIndex: 'progress',
+    label: "进度",
     key: 'progress',
-    width: 100,
   },
   {
-    title: "操作",
-    dataIndex: 'op',
+    label: "操作",
     key: 'op',
-    width: 200
   },
 ]

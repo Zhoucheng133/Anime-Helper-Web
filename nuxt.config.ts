@@ -2,10 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: [
-    '@ant-design-vue/nuxt', 
-    '@pinia/nuxt'
-  ],
+  modules: ['@ant-design-vue/nuxt', '@pinia/nuxt', '@nuxt/ui'],
   css: [
     'bootstrap-icons/font/bootstrap-icons.css',
     '~/style/global.css'
