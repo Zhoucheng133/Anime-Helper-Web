@@ -3,9 +3,9 @@
     <PageHeader class="header" :login="true" :page-name="'list'" />
     <div class="body">
       <div class="toolbar">
-
+        
       </div>
-      <a-table :dataSource="list" :columns="listColumn" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
+      <a-table :dataSource="filter" :columns="listColumn" :pagination="false" size="small" :scroll="{ x: 500 }" sticky>
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'progress'">
             <a-progress :percent="record.now/analyseEpisode(record as BangumiItem)*100" :showInfo="false" />
@@ -86,6 +86,32 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import axios from 'axios';
 import { reqHost } from '~/hooks/network';
 const locale=zhCN;
+
+let filterType=ref('progress');
+
+let filter=computed(()=>{
+  if(filterType.value=='all'){
+    return list.value;
+  }else if(filterType.value=='progress'){
+    return list.value.filter((item)=>{
+      return !(calculateEpisodesReleased(item.time)>=item.episode && item.now==item.episode);
+    })
+  }else if(filterType.value=='onUpdate'){
+    return list.value.filter((item)=>{
+      return calculateEpisodesReleased(item.time)<item.episode
+    });
+  }else if(filterType.value=='end'){
+    return list.value.filter((item)=>{
+      return calculateEpisodesReleased(item.time)>=item.episode
+    });
+  }else if(filterType.value=='finished'){
+    return list.value.filter((item)=>{
+      return calculateEpisodesReleased(item.time)>=item.episode && item.now==item.episode;
+    });
+  }
+  return [];
+})
+
 const delItem=(record: BangumiItem)=>{
   const token=useCookie('token');
   if(!token.value){
@@ -211,3 +237,9 @@ if(!islogin){
 }
 
 </script>
+
+<style>
+.toolbar{
+  margin-bottom: 10px;
+}
+</style>
