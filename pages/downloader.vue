@@ -50,7 +50,7 @@
       </div>
       <a-collapse style="margin-top: 20px;" v-model:activeKey="showFold">
         <a-collapse-panel key="1" header="番剧表">
-          <UButton :disabled='running' variant="soft">添加</UButton>
+          <UButton :disabled='running' variant="soft" @click="showAddBangumiDialog=true;">添加</UButton>
           <UTable :rows="formData.bangumi" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }" :columns="bangumiColumn">
             <template #op-data="{ row }">
               <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delBangumiItem(row)">删除</UButton></div>
@@ -67,6 +67,20 @@
         </a-collapse-panel>
       </a-collapse>
     </div>
+    <a-modal v-model:open="showAddBangumiDialog" title="添加一个番剧" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
+      <div class="bangumiItem" style="margin-top: 10px;">
+        <div class="bangumiItem_title">字幕组</div>
+        <div class="bangumiItem_content">
+          <a-input v-model:value="addBangumi.ass"></a-input>
+        </div>
+      </div>
+      <div class="bangumiItem" style="margin-top: 10px;">
+        <div class="bangumiItem_title">标题</div>
+        <div class="bangumiItem_content">
+          <a-input v-model:value="addBangumi.title"></a-input>
+        </div>
+      </div>
+    </a-modal>
   </a-config-provider>
 </template>
 
@@ -80,11 +94,47 @@ const locale=zhCN;
 const rssOptions=['mikan', 'acgrip'];
 let inputPort=ref('');
 let showFold=ref(['1', '2']);
+let showAddBangumiDialog=ref(false);
+let addBangumi=ref<DownloaderItem>({
+  title: '',
+  ass: ''
+})
 
 const exclusionRow=computed(()=>{
   return formData.value.exclusions.map((item)=>({value: item}));
 })
 
+const onDialogCancel=()=>{
+  addBangumi.value={
+    title: '',
+    ass: ''
+  };
+}
+
+const addBangumiOk=()=>{
+  if(addBangumi.value.ass.length==0){
+    message.error("字幕组不能为空");
+    return;
+  }else if(addBangumi.value.title.length==0){
+    message.error("标题不能为空");
+    return;
+  }
+  const exists = formData.value.bangumi.some(item => 
+    item.ass === addBangumi.value.ass && item.title ===addBangumi.value.title
+  );
+
+  if(exists){
+    message.error("番剧表已有该数据")
+    return;
+  }
+  formData.value.bangumi.push({
+    "ass": addBangumi.value.ass,
+    "title": addBangumi.value.title,
+  })
+  onDialogCancel();
+  message.success("添加成功");
+  showAddBangumiDialog.value=false;
+}
 const delBangumiItem=(record: DownloaderItem)=>{
   Modal.confirm({
     title: '你确定要删除这个番剧吗',
