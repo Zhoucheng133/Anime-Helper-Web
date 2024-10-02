@@ -35,36 +35,39 @@
           </ULink>
         </template>
       </UTable>
-      <a-modal v-model:open="showAdd" title="添加" @ok="onAddOk" centered>
-        <div class="modalContent">
-          <a-input placeholder="番剧标题" v-model:value="addItem.title"></a-input>
-          <a-checkbox style="margin-top: 10px;" v-model:checked="addItem.onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
-          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
-            <div style="margin-right: 10px;">集数</div>
-            <a-input-number v-model:value="addItem.episodes" :min="1"></a-input-number>
+      <UModal v-model="showAdd">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+          <template #header>
+            添加一个番剧
+          </template>
+            <div class="modalContent">
+            <UInput placeholder="番剧标题" v-model="addItem.title" style="margin-bottom: 15px;"></UInput>
+            <UCheckbox v-model="addItem.onUpdate" @change="changeUpdate" label="当前在更新"></UCheckbox>
+            <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 80px auto;">
+              <div style="margin-right: 10px; width: 50px;">集数</div>
+              <UInput v-model="addItem.episodes" type="number" :min="1" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 80px auto;">
+              <div style="margin-right: 10px; width: 50px;">观看至</div>
+              <UInput v-model="addItem.now" type="number" :min="0" :max="judgeAdd()" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 80px auto;" v-show="addItem.onUpdate">
+              <div style="margin-right: 10px;">更新至</div>
+              <UInput v-model="addItem.updateTo" :min="1" :max="addItem.episodes" type="number" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 80px auto;" v-show="addItem.onUpdate">
+              <div style="margin-right: 10px;">更新日期</div>
+              <USelectMenu v-model="addItem.weekday" :options="weekdayOptions" value-attribute="id" option-attribute="name"></USelectMenu>
+            </div>
           </div>
-          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
-            <div style="margin-right: 10px;">观看至</div>
-            <a-input-number v-model:value="addItem.now" :min="0" :max="judgeAdd()"></a-input-number>
-          </div>
-          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="addItem.onUpdate">
-            <div style="margin-right: 10px;">更新至</div>
-            <a-input-number v-model:value="addItem.updateTo" :min="1" :max="addItem.episodes"></a-input-number>
-          </div>
-          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="addItem.onUpdate">
-            <div style="margin-right: 10px;">更新日期</div>
-            <a-select v-model:value="addItem.weekday">
-              <a-select-option :value="0">星期日</a-select-option>
-              <a-select-option :value="1">星期一</a-select-option>
-              <a-select-option :value="2">星期二</a-select-option>
-              <a-select-option :value="3">星期三</a-select-option>
-              <a-select-option :value="4">星期四</a-select-option>
-              <a-select-option :value="5">星期五</a-select-option>
-              <a-select-option :value="6">星期六</a-select-option>
-            </a-select>
-          </div>
-        </div>
-      </a-modal>
+          <template #footer>
+            <div style="display: flex;">
+              <UButton style="margin-left: auto;" variant="soft" color="gray" @click="showAdd=false">取消</UButton>
+              <UButton style="margin-left: 10px;" @click="onAddOk">添加</UButton>
+            </div>
+          </template>
+        </UCard>
+      </UModal>
       <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
         <div class="modalContent">
           <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
@@ -126,6 +129,17 @@ import { addOk } from '~/hooks/add';
 import { onAddDownloaderOk } from '~/hooks/adddownloader';
 import type { DownloaderItem } from '~/hooks/dl';
 const locale=zhCN;
+const modal = useModal()
+
+const weekdayOptions = [
+  { id: 0, name: '星期日' },
+  { id: 1, name: '星期一' },
+  { id: 2, name: '星期二' },
+  { id: 3, name: '星期三' },
+  { id: 4, name: '星期四' },
+  { id: 5, name: '星期五' },
+  { id: 6, name: '星期六' },
+];
 
 let filterType=ref('进行中');
 const typs=['所有', '进行中', '更新中', '已完结', '已看完', '搜索'];
