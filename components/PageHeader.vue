@@ -1,7 +1,9 @@
 <template>
-  <div class="head_container">
-    <img src="/icon.svg" alt="" width="40px" class="head_icon">
-    <div class="head_title">AnimeHelper</div>
+  <div class="head_container" :style="{'justify-content': 'space-between;'}">
+    <div class="head_lead">
+      <img src="/icon.svg" alt="" width="40px" class="head_icon">
+      <div class="head_title">AnimeHelper</div>
+    </div>
     <div class="head_menus" v-if="showMenu">
       <div :class="isSelect('list') ? 'head_menuItem_select' : 'head_menuItem' " @click="link('list')">列表</div>
       <div :class="isSelect('bangumi') ? 'head_menuItem_select' : 'head_menuItem' " @click="link('bangumi')">每日放送</div>
@@ -82,6 +84,11 @@ judgeShowMenu();
 </script>
 
 <style>
+.head_lead{
+  display: flex;
+  align-items: center;
+  width: 250px;
+}
 .head_menuItem:hover{
   color: #1677ff;
 }
@@ -121,19 +128,16 @@ judgeShowMenu();
   color: red;
 }
 .head_logout{
+  width: 250px;
   justify-content: end;
   margin-right: 30px;
   display: flex;
   transition: color linear .2s;
   cursor: pointer;
-  margin-left: auto;
   z-index: 30;
 }
 .head_menus{
-  /* height: 80px; */
-  position: fixed;
-  width: 100%;
-  margin: auto;
+  /* width: 100%; */
   display: flex;
   align-items: center;
   justify-content: center;
