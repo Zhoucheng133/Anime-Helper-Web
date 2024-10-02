@@ -5,16 +5,16 @@
       <div class="panel">
         <div class="panelTitle">注册</div>
         <div class="panelSubTitle">Hi, 从这里开始吧👋</div>
-        <div class="item">
-          <div class="itemLabel">用户名</div>
+        <div class="register_item">
+          <div class="register_itemLabel">用户名</div>
           <UInput size="lg" v-model="username"></UInput>
         </div>
-        <div class="item">
-          <div class="itemLabel">密码</div>
+        <div class="register_item">
+          <div class="register_itemLabel">密码</div>
           <UInput size="lg" type="password" v-model="password"></UInput>
         </div>
-        <div class="item">
-          <div class="itemLabel">重复密码</div>
+        <div class="register_item">
+          <div class="register_itemLabel">重复密码</div>
           <UInput size="lg" type="password" v-model="password_again"></UInput>
         </div>
         <div class="loginButton" @click="register">注册</div>
@@ -111,11 +111,11 @@ useHead({
   display: flex;
   margin-top: 30px;
 }
-.itemLabel {
+.register_itemLabel {
   margin-bottom: 10px;
 }
 
-.item {
+.register_item {
   margin-top: 20px;
 }
 

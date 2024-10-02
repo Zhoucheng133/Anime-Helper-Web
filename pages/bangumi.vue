@@ -5,37 +5,37 @@
       <a-collapse v-model:activeKey="activeKey">
         <a-collapse-panel key="0" header="星期日">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="1" header="星期一">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[1]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 1)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[1]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 1)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="2" header="星期二">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[2]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 2)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[2]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 2)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="3" header="星期三">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[3]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 3)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[3]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 3)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="4" header="星期四">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[4]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 4)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[4]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 4)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="5" header="星期五">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[5]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 5)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[5]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 5)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
         <a-collapse-panel key="6" header="星期六">
           <a-flex wrap="wrap" gap="middle">
-            <UBadge class="item" v-for="(item, index) in list[6]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 6)">{{ item }}</UBadge>
+            <UBadge class="bangumi_item" v-for="(item, index) in list[6]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 6)">{{ item }}</UBadge>
           </a-flex>
         </a-collapse-panel>
       </a-collapse>
@@ -161,7 +161,7 @@ if(!islogin){
 </script>
 
 <style>
-.item{
+.bangumi_item{
   font-size: 15px;
   user-select: none;
   /* padding: 5px; */

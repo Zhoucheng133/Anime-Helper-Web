@@ -5,12 +5,12 @@
       <div class="panel">
         <div class="panelTitle">登录</div>
         <div class="panelSubTitle">Hi, 欢迎回来👋</div>
-        <div class="item">
-          <div class="itemLabel">用户名</div>
+        <div class="login_item">
+          <div class="login_itemLabel">用户名</div>
           <UInput size="lg" v-model="username"></UInput>
         </div>
-        <div class="item">
-          <div class="itemLabel">密码</div>
+        <div class="login_item">
+          <div class="login_itemLabel">密码</div>
           <UInput size="lg" type="password" v-model="password" @pressEnter="loginHandler"></UInput>
         </div>
         <div class="loginButton" @click="loginHandler">登录</div>
@@ -105,11 +105,11 @@ const loginHandler=async ()=>{
   display: flex;
   margin-top: 30px;
 }
-.itemLabel {
+.login_itemLabel {
   margin-bottom: 10px;
 }
 
-.item {
+.login_item {
   margin-top: 20px;
 }
 
