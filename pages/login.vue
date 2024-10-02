@@ -59,7 +59,12 @@ const loginHandler=async ()=>{
 
   if(response.ok){
     // localStorage.setItem("token", response.msg);
-    let token=useCookie("token");
+    let token=useCookie(
+      "token",
+      {
+        expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+      }
+    );
     token.value=response.msg;
     window.location.href='/list';
   }else{
