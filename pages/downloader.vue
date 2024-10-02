@@ -58,7 +58,7 @@
           </UTable>
         </a-collapse-panel>
         <a-collapse-panel key="2" header="排除关键字">
-          <UButton :disabled='running' variant="soft">添加</UButton>
+          <UButton :disabled='running' variant="soft" @click="showAddExclusionDialog=true">添加</UButton>
           <UTable :rows="exclusionRow" :columns="exclusionColumn" >
             <template #op-data="{ row }">
               <div><UButton size="xs" color="red" variant="soft" :disabled='running'>删除</UButton></div>
@@ -81,6 +81,14 @@
         </div>
       </div>
     </a-modal>
+    <a-modal v-model:open="showAddExclusionDialog" title="添加一个排除关键字" @ok="addExclusionOk" @cancel="onDialogCancel" centered>
+      <div class="exclutionItem" style="margin-top: 10px;">
+        <div class="exclutionItem_title">关键字</div>
+        <div class="exclutionItem_content">
+          <a-input v-model:value="addExclusion"></a-input>
+        </div>
+      </div>
+    </a-modal>
   </a-config-provider>
 </template>
 
@@ -95,10 +103,12 @@ const rssOptions=['mikan', 'acgrip'];
 let inputPort=ref('');
 let showFold=ref(['1', '2']);
 let showAddBangumiDialog=ref(false);
+let showAddExclusionDialog=ref(false);
 let addBangumi=ref<DownloaderItem>({
   title: '',
   ass: ''
 })
+let addExclusion=ref('');
 
 const exclusionRow=computed(()=>{
   return formData.value.exclusions.map((item)=>({value: item}));
@@ -109,6 +119,23 @@ const onDialogCancel=()=>{
     title: '',
     ass: ''
   };
+  addExclusion.value='';
+}
+
+const addExclusionOk=()=>{
+  if(addExclusion.value.length==0){
+    message.error("关键字不能为空");
+    return;
+  }
+  if(formData.value.exclusions.includes(addExclusion.value)){
+    message.error("该关键字已存在");
+    return;
+  }
+
+  formData.value.exclusions.push(addExclusion.value);
+  onDialogCancel();
+  message.success("添加成功");
+  showAddExclusionDialog.value=false;
 }
 
 const addBangumiOk=()=>{
@@ -214,5 +241,33 @@ if(!islogin){
   .body {
     width: 100%
   }
+}
+.bangumiItem{
+  display: grid;
+  grid-template-columns: 50px auto;
+  column-gap: 10px;
+}
+.bangumiItem_title{
+  display: flex;
+  align-items: center;
+}
+.bangumiItem_content{
+  display: flex;
+  align-items: center;
+}
+
+.exclutionItem{
+  display: grid;
+  grid-template-columns: 50px auto;
+  column-gap: 10px;
+}
+
+.exclutionItem_title{
+  display: flex;
+  align-items: center;
+}
+.exclutionItem_content{
+  display: flex;
+  align-items: center;
 }
 </style>
