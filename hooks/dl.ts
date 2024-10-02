@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ssrHost } from "./network";
+import { reqHost, ssrHost } from "./network";
 
 export interface DownloaderItem{
   title: string,
@@ -79,4 +79,24 @@ export const initStatus=async (): Promise<boolean>=>{
     return false;
   });
   return response.value;
+}
+
+export const saveForm=async (item: DownloaderForm)=>{
+  const token=useCookie('token');
+  if(!token.value){
+    message.error("获取token失败")
+    return;
+  }
+  const response=(await axios.post(`${reqHost}/api/dl/load`, {
+    data: item,
+  }, {
+    headers: {
+      token: token.value,
+    }
+  })).data
+  if(response.ok){
+    message.success("保存成功");
+  }else if(!response.ok){
+    message.error("保存表单失败: "+response.msg);
+  }
 }

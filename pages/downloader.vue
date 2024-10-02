@@ -13,7 +13,7 @@
         <div>系统操作</div>
         <div class="dl_item_content">
           <UButton size="xs" variant="soft">显示日志</UButton>
-          <UButton size="xs" variant="soft" style="margin-left: 20px;">保存表单</UButton>
+          <UButton size="xs" variant="soft" style="margin-left: 20px;" @click="saveForm(formData)" :disabled='running'>保存表单</UButton>
         </div>
       </div>
       <div class="dl_item">
@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
-import { type DownloaderForm, type DownloaderItem, bangumiColumn, exclusionColumn, initFormData, initStatus } from '~/hooks/dl';
+import { type DownloaderForm, type DownloaderItem, bangumiColumn, exclusionColumn, initFormData, initStatus, saveForm } from '~/hooks/dl';
 import init from '~/hooks/init';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 const locale=zhCN;
