@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
-import { type DownloaderForm, type DownloaderItem, type Log, bangumiColumn, exclusionColumn, getLog, initFormData, initStatus, saveForm } from '~/hooks/dl';
+import { type DownloaderForm, type DownloaderItem, type Log, bangumiColumn, exclusionColumn, getLog, initFormData, initStatus, saveForm, toggle } from '~/hooks/dl';
 import init from '~/hooks/init';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import dayjs from 'dayjs';
@@ -223,8 +223,10 @@ const delBangumiItem=(record: DownloaderItem)=>{
   });
 }
 
-const toggleRun=()=>{
-  
+const toggleRun=async ()=>{
+  if(!(await toggle(running.value, formData.value))){
+    running.value=!running.value;
+  }
 }
 
 let running=ref(false);
@@ -311,5 +313,23 @@ if(!islogin){
 .exclutionItem_content{
   display: flex;
   align-items: center;
+}
+.logContent{
+  max-height: 500px;
+  overflow: auto;
+}
+.logItem{
+  display: grid;
+  grid-template-columns: auto 150px 10px;
+  align-items: center;
+}
+.log_label{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.log_time{
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

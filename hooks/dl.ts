@@ -12,6 +12,49 @@ export interface Log{
   time: number,
 };
 
+export const toggle=async (running: boolean, form: DownloaderForm): Promise<boolean>=>{
+  const token=useCookie('token');
+  if(!token.value){
+    message.error("获取token失败")
+    return false;
+  }
+  if(running){
+    if(form.ariaLink.length==0){
+      message.error("Aria 地址不能为空");
+      return false;
+    }else if(form.bangumi.length==0){
+      message.error("番剧表不能为空");
+      return false;
+    }
+    await saveForm(form, false);
+    const response=(await axios.post(`${reqHost}/api/dl/run`, {}, {
+      headers: {
+        token: token.value
+      }
+    })).data;
+    if(response.ok){
+      message.success("启动服务成功");
+      return true;
+    }else{
+      message.error("启动服务失败: "+response.msg);
+      return false;
+    }
+  }else{
+    const response=(await axios.post(`${reqHost}/api/dl/stop`, {}, {
+      headers: {
+        token: token.value
+      }
+    })).data;
+    if(response.ok){
+      message.success("停止服务成功")
+      return true;
+    }else{
+      message.error("停止服务失败: "+response.msg);
+      return false;
+    }
+  }
+}
+
 export const getLog=async (): Promise<Log[] | null>=>{
   const token=useCookie('token');
   if(!token.value){
@@ -25,8 +68,8 @@ export const getLog=async (): Promise<Log[] | null>=>{
   if(response.ok){
     return response.msg.reverse()
   }else{
-    return [];
     message.error("获取日志失败: "+response.msg);
+    return [];
   }
 }
 
@@ -105,7 +148,7 @@ export const initStatus=async (): Promise<boolean>=>{
   return response.value;
 }
 
-export const saveForm=async (item: DownloaderForm)=>{
+export const saveForm=async (item: DownloaderForm, showMessage :boolean=true)=>{
   const token=useCookie('token');
   if(!token.value){
     message.error("获取token失败")
@@ -119,8 +162,12 @@ export const saveForm=async (item: DownloaderForm)=>{
     }
   })).data
   if(response.ok){
-    message.success("保存成功");
+    if(showMessage){
+      message.success("保存成功");
+    }
   }else if(!response.ok){
-    message.error("保存表单失败: "+response.msg);
+    if(showMessage){
+      message.error("保存表单失败: "+response.msg);
+    }
   }
 }
