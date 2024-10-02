@@ -61,7 +61,7 @@
           <UButton :disabled='running' variant="soft" @click="showAddExclusionDialog=true">添加</UButton>
           <UTable :rows="exclusionRow" :columns="exclusionColumn" >
             <template #op-data="{ row }">
-              <div><UButton size="xs" color="red" variant="soft" :disabled='running'>删除</UButton></div>
+              <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delExclusionItem(row)">删除</UButton></div>
             </template>
           </UTable>
         </a-collapse-panel>
@@ -113,6 +113,25 @@ let addExclusion=ref('');
 const exclusionRow=computed(()=>{
   return formData.value.exclusions.map((item)=>({value: item}));
 })
+
+const delExclusionItem=(record: any)=>{
+  Modal.confirm({
+    title: '你确定要删除这个关键字吗',
+    centered: true,
+    okText: '删除',
+    cancelText: '取消',
+    onOk() {
+      formData.value.exclusions=formData.value.exclusions.filter((item)=>{
+        if(item==record.value){
+          return false
+        }
+        return true;
+      })
+      message.success("删除成功")
+    },
+    onCancel() {},
+  });
+}
 
 const onDialogCancel=()=>{
   addBangumi.value={
