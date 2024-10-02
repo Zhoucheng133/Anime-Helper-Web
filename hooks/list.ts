@@ -9,13 +9,13 @@ export interface BangumiItem{
   time: number
 }
 
-// 获取列表
+// 刷新列表
 export const getList=async (): Promise<BangumiItem[]>=>{
   const token=useCookie('token');
   if(!token.value){
     return [];
   }
-  const data = (await axios.get(`${ssrHost}/api/list`, {
+  const data = (await axios.get(`${reqHost}/api/list`, {
     headers: {
       token: token.value,
     }
