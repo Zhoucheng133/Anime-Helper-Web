@@ -123,7 +123,8 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import axios from 'axios';
 import { reqHost } from '~/hooks/network';
 import { addOk } from '~/hooks/add';
-import { onAddDownloaderOk, type DownloaderItem } from '~/hooks/adddownloader';
+import { onAddDownloaderOk } from '~/hooks/adddownloader';
+import type { DownloaderItem } from '~/hooks/dl';
 const locale=zhCN;
 
 let filterType=ref('进行中');

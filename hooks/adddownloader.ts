@@ -1,10 +1,6 @@
 import axios from "axios";
 import { reqHost } from "./network";
-
-export interface DownloaderItem{
-  title: string,
-  ass: string
-}
+import type { DownloaderItem } from "./dl";
 
 export const onAddDownloaderOk=async (item: DownloaderItem): Promise<boolean>=>{
   const token=useCookie('token');
