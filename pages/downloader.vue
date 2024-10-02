@@ -12,7 +12,7 @@
       <div class="dl_item">
         <div>系统操作</div>
         <div class="dl_item_content">
-          <UButton size="xs" variant="soft">显示日志</UButton>
+          <UButton size="xs" variant="soft" @click="showLog">显示日志</UButton>
           <UButton size="xs" variant="soft" style="margin-left: 20px;" @click="saveForm(formData)" :disabled='running'>保存表单</UButton>
         </div>
       </div>
@@ -89,14 +89,23 @@
         </div>
       </div>
     </a-modal>
+    <a-modal v-model:open="showLogDialog" title="日志" okText="完成" @ok="showLogDialog=false" :width="width<720?width-20 : 700" centered :footer="null">
+      <div class="logContent">
+        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
+          <div class="log_label">{{ item.msg }}</div>
+          <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+        </div>
+      </div>
+    </a-modal>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
-import { type DownloaderForm, type DownloaderItem, bangumiColumn, exclusionColumn, initFormData, initStatus, saveForm } from '~/hooks/dl';
+import { type DownloaderForm, type DownloaderItem, type Log, bangumiColumn, exclusionColumn, getLog, initFormData, initStatus, saveForm } from '~/hooks/dl';
 import init from '~/hooks/init';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import dayjs from 'dayjs';
 const locale=zhCN;
 
 const rssOptions=['mikan', 'acgrip'];
@@ -104,11 +113,25 @@ let inputPort=ref('');
 let showFold=ref(['1', '2']);
 let showAddBangumiDialog=ref(false);
 let showAddExclusionDialog=ref(false);
+let width=ref(800);
 let addBangumi=ref<DownloaderItem>({
   title: '',
   ass: ''
 })
 let addExclusion=ref('');
+let showLogDialog=ref(false);
+let logContent=ref<Log[]>([]);
+const showLog=async ()=>{
+  const temp=await getLog();
+  if(temp){
+    logContent.value=temp;
+    showLogDialog.value=true;
+  }
+}
+
+onMounted(()=>{
+  width.value=window.innerWidth;
+})
 
 const exclusionRow=computed(()=>{
   return formData.value.exclusions.map((item)=>({value: item}));

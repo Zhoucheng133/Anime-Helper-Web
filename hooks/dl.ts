@@ -6,6 +6,30 @@ export interface DownloaderItem{
   ass: string
 }
 
+export interface Log{
+  ok: boolean,
+  msg: string,
+  time: number,
+};
+
+export const getLog=async (): Promise<Log[] | null>=>{
+  const token=useCookie('token');
+  if(!token.value){
+    return null;
+  }
+  const response=(await axios.get(`${reqHost}/api/dl/log`, {
+    headers: {
+      token: token.value
+    }
+  })).data;
+  if(response.ok){
+    return response.msg.reverse()
+  }else{
+    return [];
+    message.error("获取日志失败: "+response.msg);
+  }
+}
+
 export interface DownloaderForm{
   ariaLink: string,
   ariaSecret: string,
