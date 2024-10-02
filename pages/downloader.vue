@@ -1,77 +1,81 @@
 <template>
-  <PageHeader class="header" :login="true" :page-name="'downloader'" />
-  <div class="body">
-    <div class="dl_item">
-      <div>运行状态</div>
-      <div class="dl_item_content">
-        <UBadge :color="running ? 'green' : 'yellow'" style="margin-right: 20px;">{{ running ? '运行中' : "等待中" }}</UBadge>
-        <UToggle v-model="running" @change="toggleRun" />
+  <a-config-provider :locale="locale">
+    <PageHeader class="header" :login="true" :page-name="'downloader'" />
+    <div class="body">
+      <div class="dl_item">
+        <div>运行状态</div>
+        <div class="dl_item_content">
+          <UBadge :color="running ? 'green' : 'yellow'" style="margin-right: 20px;">{{ running ? '运行中' : "等待中" }}</UBadge>
+          <UToggle v-model="running" @change="toggleRun" />
+        </div>
       </div>
-    </div>
-    <div class="dl_item">
-      <div>系统操作</div>
-      <div class="dl_item_content">
-        <UButton size="xs" variant="soft">显示日志</UButton>
-        <UButton size="xs" variant="soft" style="margin-left: 20px;">保存表单</UButton>
+      <div class="dl_item">
+        <div>系统操作</div>
+        <div class="dl_item_content">
+          <UButton size="xs" variant="soft">显示日志</UButton>
+          <UButton size="xs" variant="soft" style="margin-left: 20px;">保存表单</UButton>
+        </div>
       </div>
-    </div>
-    <div class="dl_item">
-      <div>RSS 来源</div>
-      <div class="dl_item_content">
-        <USelectMenu :options="rssOptions" v-model="formData.type" :disabled='running'>
-          <template #label>
-            {{ formData.type=='mikan' ? 'Mikan' : 'Acgrip' }}
-          </template>
-          <template #option="{ option: item }">
-            {{ item=='mikan' ? 'Mikan' : 'Acgrip' }}
-          </template>
-        </USelectMenu>
+      <div class="dl_item">
+        <div>RSS 来源</div>
+        <div class="dl_item_content">
+          <USelectMenu :options="rssOptions" v-model="formData.type" :disabled='running'>
+            <template #label>
+              {{ formData.type=='mikan' ? 'Mikan' : 'Acgrip' }}
+            </template>
+            <template #option="{ option: item }">
+              {{ item=='mikan' ? 'Mikan' : 'Acgrip' }}
+            </template>
+          </USelectMenu>
+        </div>
       </div>
-    </div>
-    <div class="dl_item">
-      <div>更新频率</div>
-      <div class="dl_item_content">
-        <div style="width: 100px;"><UInput v-model="formData.freq" type="number"></UInput></div>
-        <div style="margin-left: 10px;">分钟</div>
+      <div class="dl_item">
+        <div>更新频率</div>
+        <div class="dl_item_content">
+          <div style="width: 100px;"><UInput v-model="formData.freq" type="number" :disabled='running'></UInput></div>
+          <div style="margin-left: 10px;">分钟</div>
+        </div>
       </div>
-    </div>
-    <div class="dl_item">
-      <div>Aria2 地址</div>
-      <div class="dl_item_content">
-        <div style="width: 100%;"><UInput v-model="formData.ariaLink" placeholder="http(s)://" :disabled='running' /></div>
+      <div class="dl_item">
+        <div>Aria2 地址</div>
+        <div class="dl_item_content">
+          <div style="width: 100%;"><UInput v-model="formData.ariaLink" placeholder="http(s)://" :disabled='running' /></div>
+        </div>
       </div>
-    </div>
-    <div class="dl_item">
-      <div>Aria2 密钥</div>
-      <div class="dl_item_content">
-        <div style="width: 100%;"><UInput v-model="formData.ariaSecret" placeholder="" type="password" :disabled='running' /></div>
+      <div class="dl_item">
+        <div>Aria2 密钥</div>
+        <div class="dl_item_content">
+          <div style="width: 100%;"><UInput v-model="formData.ariaSecret" placeholder="" type="password" :disabled='running' /></div>
+        </div>
       </div>
+      <a-collapse style="margin-top: 20px;" v-model:activeKey="showFold">
+        <a-collapse-panel key="1" header="番剧表">
+          <UButton :disabled='running' variant="soft">添加</UButton>
+          <UTable :rows="formData.bangumi" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }" :columns="bangumiColumn">
+            <template #op-data="{ row }">
+              <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delBangumiItem(row)">删除</UButton></div>
+            </template>
+          </UTable>
+        </a-collapse-panel>
+        <a-collapse-panel key="2" header="排除关键字">
+          <UButton :disabled='running' variant="soft">添加</UButton>
+          <UTable :rows="exclusionRow" :columns="exclusionColumn" >
+            <template #op-data="{ row }">
+              <div><UButton size="xs" color="red" variant="soft" :disabled='running'>删除</UButton></div>
+            </template>
+          </UTable>
+        </a-collapse-panel>
+      </a-collapse>
     </div>
-    <a-collapse style="margin-top: 20px;" v-model:activeKey="showFold">
-      <a-collapse-panel key="1" header="番剧表">
-        <UButton :disabled='running' variant="soft">添加</UButton>
-        <UTable :rows="formData.bangumi" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }" :columns="bangumiColumn">
-          <template #op-data="{ row }">
-            <div><UButton size="xs" color="red" variant="soft">删除</UButton></div>
-          </template>
-        </UTable>
-      </a-collapse-panel>
-      <a-collapse-panel key="2" header="排除关键字">
-        <UButton :disabled='running' variant="soft">添加</UButton>
-        <UTable :rows="exclusionRow" :columns="exclusionColumn" >
-          <template #op-data="{ row }">
-            <div><UButton size="xs" color="red" variant="soft">删除</UButton></div>
-          </template>
-        </UTable>
-      </a-collapse-panel>
-    </a-collapse>
-  </div>
+  </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
-import { type DownloaderForm, bangumiColumn, exclusionColumn, initFormData, initStatus } from '~/hooks/dl';
+import { type DownloaderForm, type DownloaderItem, bangumiColumn, exclusionColumn, initFormData, initStatus } from '~/hooks/dl';
 import init from '~/hooks/init';
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
+const locale=zhCN;
 
 const rssOptions=['mikan', 'acgrip'];
 let inputPort=ref('');
@@ -80,6 +84,25 @@ let showFold=ref(['1', '2']);
 const exclusionRow=computed(()=>{
   return formData.value.exclusions.map((item)=>({value: item}));
 })
+
+const delBangumiItem=(record: DownloaderItem)=>{
+  Modal.confirm({
+    title: '你确定要删除这个番剧吗',
+    okText: '删除',
+    cancelText: '取消',
+    centered: true,
+    onOk() {
+      formData.value.bangumi=formData.value.bangumi.filter((item)=>{
+        if(item.ass==record.ass && item.title==record.title){
+          return false
+        }
+        return true;
+      })
+      message.success("删除成功")
+    },
+    onCancel() {},
+  });
+}
 
 const toggleRun=()=>{
   
