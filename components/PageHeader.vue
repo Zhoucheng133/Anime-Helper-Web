@@ -1,5 +1,5 @@
 <template>
-  <div class="head_container" :style="{'justify-content': 'space-between;'}">
+  <div class="head_container">
     <div class="head_lead">
       <img src="/icon.svg" alt="" width="40px" class="head_icon">
       <div class="head_title">AnimeHelper</div>
@@ -160,5 +160,6 @@ judgeShowMenu();
   position: sticky;
   top: 0;
   user-select: none;
+  justify-content: space-between;
 }
 </style>
