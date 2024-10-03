@@ -1,6 +1,6 @@
 import axios from "axios"
 import { reqHost, ssrHost } from "./network"
-const toast = useToast()
+// const toast = useToast()
 
 export interface BangumiItem{
   id: string,
@@ -49,6 +49,7 @@ export async function initList(): Promise<BangumiItem[]>{
 
 // 修改项目
 export const changeItem=async (item: BangumiItem): Promise<boolean>=>{
+  const toast = useToast()
   const token=useCookie('token');
   if(!token.value){
     return false;

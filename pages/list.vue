@@ -144,6 +144,7 @@ import { onAddDownloaderOk } from '~/hooks/adddownloader';
 import type { DownloaderItem } from '~/hooks/dl';
 import ComfirmModal from '~/components/ConfirmModal.vue';
 const locale=zhCN;
+const toast = useToast()
 const modal = useModal()
 
 const weekdayOptions = [
@@ -232,7 +233,6 @@ let filter=computed(()=>{
     })
   }
 })
-const toast = useToast()
 const delItem=(record: BangumiItem)=>{
   const token=useCookie('token');
   if(!token.value){

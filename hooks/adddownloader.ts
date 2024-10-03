@@ -1,10 +1,10 @@
 import axios from "axios";
 import { reqHost } from "./network";
 import type { DownloaderItem } from "./dl";
-const toast = useToast()
 
 export const onAddDownloaderOk=async (item: DownloaderItem): Promise<boolean>=>{
   const token=useCookie('token');
+  const toast = useToast()
   if(!token.value){
     toast.add({
       title: '添加失败',

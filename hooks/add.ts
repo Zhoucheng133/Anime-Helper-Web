@@ -5,9 +5,9 @@ import { getTimestampOfFirstEpisode } from "./cals";
 import axios from "axios";
 import { reqHost } from "./network";
 
-const toast = useToast()
 
 export const addOk=async (item: EditItem): Promise<boolean>=>{
+  const toast = useToast()
   const token=useCookie('token');
   if(!token.value){
     toast.add({
