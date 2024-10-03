@@ -106,13 +106,13 @@
           添加到下载器
         </template>
         <div class="bangumiItem">
-          <div class="bangumiItem_title">字幕组</div>
+          <div class="bangumiItem_title" style="margin-bottom: 5px;">字幕组</div>
           <div class="bangumiItem_content">
             <UInput v-model="downloaderItem.ass"></UInput>
           </div>
         </div>
         <div class="bangumiItem" style="margin-top: 10px;">
-          <div class="bangumiItem_title">标题</div>
+          <div class="bangumiItem_title" style="margin-bottom: 5px;">标题</div>
           <div class="bangumiItem_content">
             <UInput v-model="downloaderItem.title"></UInput>
           </div>
