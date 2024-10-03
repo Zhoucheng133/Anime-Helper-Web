@@ -66,7 +66,7 @@
       </template>
     </UAccordion>
   </div>
-  <UModal v-model="showAddBangumiDialog" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
+  <UModal v-model="showAddBangumiDialog">
     <UCard>
       <template #header>
         添加一个番剧
@@ -91,14 +91,25 @@
       </template>
     </UCard>
   </UModal>
-  <a-modal v-model:open="showAddExclusionDialog" title="添加一个排除关键字" @ok="addExclusionOk" @cancel="onDialogCancel" centered>
-    <div class="exclutionItem" style="margin-top: 10px;">
-      <div class="exclutionItem_title">关键字</div>
-      <div class="exclutionItem_content">
-        <a-input v-model:value="addExclusion"></a-input>
+  <UModal v-model="showAddExclusionDialog">
+    <UCard>
+      <template #header>
+        添加一个排除关键字
+      </template>
+      <div class="exclutionItem">
+        <div class="exclutionItem_title" style="margin-bottom: 5px;">关键字</div>
+        <div class="exclutionItem_content">
+          <UInput v-model="addExclusion"></UInput>
+        </div>
       </div>
-    </div>
-  </a-modal>
+      <template #footer>
+        <div style="display: flex;">
+          <UButton style="margin-left: auto;" variant="soft" color="gray" @click="onDialogCancel">取消</UButton>
+          <UButton style="margin-left: 10px;" @click="addExclusionOk">添加</UButton>
+        </div>
+      </template>
+    </UCard>
+  </UModal>
   <a-modal v-model:open="showLogDialog" title="日志" okText="完成" @ok="showLogDialog=false" :width="width<720?width-20 : 700" centered :footer="null">
     <div class="logContent">
       <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
@@ -115,6 +126,8 @@ import { type DownloaderForm, type DownloaderItem, type Log, bangumiColumn, excl
 import init from '~/hooks/init';
 import dayjs from 'dayjs';
 const toast = useToast()
+const modal = useModal()
+import ComfirmModal from '~/components/ConfirmModal.vue';
 const items = [
   {label: '番剧表', defaultOpen: true, slot: 'bangumi'},
   {label: '排除关键字', defaultOpen: true, slot: 'exclusion'}
@@ -148,12 +161,10 @@ const exclusionRow=computed(()=>{
 })
 
 const delExclusionItem=(record: any)=>{
-  Modal.confirm({
-    title: '你确定要删除这个关键字吗',
-    centered: true,
+  modal.open(ComfirmModal, {
+    title: `删除关键字 "${record.value}"？`,
     okText: '删除',
-    cancelText: '取消',
-    onOk() {
+    onOk: ()=>{
       formData.value.exclusions=formData.value.exclusions.filter((item)=>{
         if(item==record.value){
           return false
@@ -163,9 +174,12 @@ const delExclusionItem=(record: any)=>{
       toast.add({
         title: '删除成功',
       })
+      modal.close();
     },
-    onCancel() {},
-  });
+    onCancel: ()=>{
+      modal.close();
+    },
+  })
 }
 
 const onDialogCancel=()=>{
@@ -233,12 +247,10 @@ const addBangumiOk=()=>{
   showAddBangumiDialog.value=false;
 }
 const delBangumiItem=(record: DownloaderItem)=>{
-  Modal.confirm({
-    title: '你确定要删除这个番剧吗',
+  modal.open(ComfirmModal, {
+    title: `删除番剧《${record.title}》？`,
     okText: '删除',
-    cancelText: '取消',
-    centered: true,
-    onOk() {
+    onOk: ()=>{
       formData.value.bangumi=formData.value.bangumi.filter((item)=>{
         if(item.ass==record.ass && item.title==record.title){
           return false
@@ -248,9 +260,12 @@ const delBangumiItem=(record: DownloaderItem)=>{
       toast.add({
         title: '删除成功',
       })
+      modal.close();
     },
-    onCancel() {},
-  });
+    onCancel: ()=>{
+      modal.close();
+    },
+  })
 }
 
 const toggleRun=async ()=>{
@@ -330,7 +345,7 @@ if(!islogin){
   align-items: center;
 } */
 
-.exclutionItem{
+/* .exclutionItem{
   display: grid;
   grid-template-columns: 50px auto;
   column-gap: 10px;
@@ -343,7 +358,7 @@ if(!islogin){
 .exclutionItem_content{
   display: flex;
   align-items: center;
-}
+} */
 .logContent{
   max-height: 500px;
   overflow: auto;
