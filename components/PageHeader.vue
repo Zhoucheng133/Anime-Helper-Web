@@ -13,8 +13,8 @@
       <i class="bi bi-box-arrow-right"></i>
       <div style="margin-left: 5px;">注销</div>
     </div>
-    <UPopover>
-      <div class="head_mobile_menu" v-if="isMobile && props.login">
+    <UPopover v-if="isMobile && props.login">
+      <div class="head_mobile_menu">
         <i class="bi bi-list"></i>
       </div>
       <template #panel>
