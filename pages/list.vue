@@ -36,7 +36,7 @@
         </template>
       </UTable>
       <UModal v-model="showAdd">
-        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+        <UCard>
           <template #header>
             添加一个番剧
           </template>
@@ -68,36 +68,39 @@
           </template>
         </UCard>
       </UModal>
-      <a-modal v-model:open="showEdit" title="编辑信息" @ok="onEditOk" centered>
-        <div class="modalContent">
-          <a-input placeholder="番剧标题" v-model:value="editItem.title"></a-input>
-          <a-checkbox style="margin-top: 10px;" v-model:checked="editItem.onUpdate" @change="changeUpdate">当前在更新</a-checkbox>
-          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;">
-            <div style="margin-right: 10px;">集数</div>
-            <a-input-number v-model:value="editItem.episodes" :min="1"></a-input-number>
+      <UModal v-model="showEdit">
+        <UCard >
+          <template #header>
+            编辑信息
+          </template>
+          <div class="modalContent">
+            <UInput placeholder="番剧标题" v-model="editItem.title" style="margin-bottom: 15px;"></UInput>
+            <UCheckbox v-model="editItem.onUpdate" @change="changeUpdate" label='当前在更新'></UCheckbox>
+            <div style="margin-top: 15px; display: grid; align-items: center; grid-template-columns: 80px auto;">
+              <div style="margin-right: 10px;">集数</div>
+              <UInput v-model="editItem.episodes" :min="1" type="number" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 80px auto;">
+              <div style="margin-right: 10px;">观看至</div>
+              <UInput v-model="editItem.now" :min="0" :max="judgeEdit()" type="number" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 80px auto;" v-show="editItem.onUpdate">
+              <div style="margin-right: 10px;">更新至</div>
+              <UInput v-model="editItem.updateTo" :min="1" :max="editItem.episodes" type="number" style="width: 100px;"></UInput>
+            </div>
+            <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 80px auto;" v-show="editItem.onUpdate">
+              <div style="margin-right: 10px;">更新日期</div>
+              <USelectMenu v-model="editItem.weekday" :options="weekdayOptions" value-attribute="id" option-attribute="name"></USelectMenu>
+            </div>
           </div>
-          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;">
-            <div style="margin-right: 10px;">观看至</div>
-            <a-input-number v-model:value="editItem.now" :min="0" :max="judgeEdit()"></a-input-number>
-          </div>
-          <div style="margin-top: 10px; display: grid; align-items: center; grid-template-columns: 70px auto;" v-show="editItem.onUpdate">
-            <div style="margin-right: 10px;">更新至</div>
-            <a-input-number v-model:value="editItem.updateTo" :min="1" :max="editItem?.episodes"></a-input-number>
-          </div>
-          <div style="margin-top: 10px; display: grid; align-items: center;  grid-template-columns: 70px auto;" v-show="editItem.onUpdate">
-            <div style="margin-right: 10px;">更新日期</div>
-            <a-select v-model:value="editItem.weekday">
-              <a-select-option :value="0">星期日</a-select-option>
-              <a-select-option :value="1">星期一</a-select-option>
-              <a-select-option :value="2">星期二</a-select-option>
-              <a-select-option :value="3">星期三</a-select-option>
-              <a-select-option :value="4">星期四</a-select-option>
-              <a-select-option :value="5">星期五</a-select-option>
-              <a-select-option :value="6">星期六</a-select-option>
-            </a-select>
-          </div>
-        </div>
-      </a-modal>
+          <template #footer>
+            <div style="display: flex;">
+              <UButton style="margin-left: auto;" variant="soft" color="gray" @click="showEdit=false">取消</UButton>
+              <UButton style="margin-left: 10px;" @click="onEditOk">完成</UButton>
+            </div>
+          </template>
+        </UCard>
+      </UModal>
       <a-modal v-model:open="showDownloader" title="添加一个番剧" @ok="onDownloaderOk" centered>
         <div class="bangumiItem" style="margin-top: 10px;">
           <div class="bangumiItem_title">字幕组</div>
