@@ -110,14 +110,24 @@
       </template>
     </UCard>
   </UModal>
-  <a-modal v-model:open="showLogDialog" title="日志" okText="完成" @ok="showLogDialog=false" :width="width<720?width-20 : 700" centered :footer="null">
-    <div class="logContent">
-      <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
-        <div class="log_label">{{ item.msg }}</div>
-        <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+  <UModal v-model="showLogDialog">
+    <UCard>
+      <template #header>
+        日志
+      </template>
+      <div class="logContent">
+        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
+          <div class="log_label">{{ item.msg }}</div>
+          <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+        </div>
       </div>
-    </div>
-  </a-modal>
+      <template #footer>
+        <div style="display: flex;">
+          <UButton style="margin-left: auto;" @click="showLogDialog=false">完成</UButton>
+        </div>
+      </template>
+    </UCard>
+  </UModal>
 </template>
 
 <script setup lang="ts">
