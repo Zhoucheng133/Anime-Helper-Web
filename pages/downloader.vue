@@ -116,12 +116,17 @@
         日志
       </template>
       <div class="logContent">
-        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
-          <div class="log_label">
-            <UTooltip :text="item.msg" :popper="{ arrow: true }">
+        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}"  class="logItem">
+          <UPopover mode="hover" :popper="{ placement: 'bottom-start' }">
+            <div class="log_label">
               {{ item.msg }}
-            </UTooltip>
-          </div>
+            </div>
+            <template #panel>
+              <div class="p-2">
+                {{ item.msg }}
+              </div>
+            </template>
+          </UPopover>
           <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
         </div>
       </div>
@@ -345,34 +350,6 @@ if(!islogin){
     width: 100%
   }
 }
-/* .bangumiItem{
-  display: grid;
-  grid-template-columns: 50px auto;
-  column-gap: 10px;
-}
-.bangumiItem_title{
-  display: flex;
-  align-items: center;
-}
-.bangumiItem_content{
-  display: flex;
-  align-items: center;
-} */
-
-/* .exclutionItem{
-  display: grid;
-  grid-template-columns: 50px auto;
-  column-gap: 10px;
-}
-
-.exclutionItem_title{
-  display: flex;
-  align-items: center;
-}
-.exclutionItem_content{
-  display: flex;
-  align-items: center;
-} */
 .logContent{
   max-height: 500px;
   overflow: auto;
