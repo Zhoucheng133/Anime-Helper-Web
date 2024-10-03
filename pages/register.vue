@@ -28,6 +28,7 @@
 import axios from 'axios';
 import PageHeader from '~/components/PageHeader.vue';
 import { reqHost, ssrHost } from '~/hooks/network';
+const toast = useToast()
 
 let username=ref("");
 let password=ref("");
@@ -45,16 +46,24 @@ if(!response.value){
 
 const register=async ()=>{
   if(username.value.length==0){
-    message.error("用户名不能为空");
+    toast.add({
+      title: '用户名不能为空'
+    })
     return;
   }else if(password.value.length==0){
-    message.error("密码不能为空");
+    toast.add({
+      title: '密码不能为空'
+    })
     return;
   }else if(password_again.value.length==0){
-    message.error("重复密码不能为空");
+    toast.add({
+      title: '重复密码不能为空'
+    })
     return;
   }else if(password.value!==password_again.value){
-    message.error("两次密码不一致");
+    toast.add({
+      title: '两次密码不一致'
+    })
     return;
   }
 
@@ -64,10 +73,15 @@ const register=async ()=>{
   })).data
   // console.log(response.data);
   if(response.ok==false){
-    message.error(response.data.msg);
+    toast.add({
+      title: '注册失败',
+      description: response.data.msg
+    })
   }else{
     window.location.href='/login';
-    message.success("注册成功");
+    toast.add({
+      title: '注册成功',
+    })
   }
 }
 useHead({

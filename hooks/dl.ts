@@ -1,5 +1,6 @@
 import axios from "axios";
 import { reqHost, ssrHost } from "./network";
+const toast = useToast()
 
 export interface DownloaderItem{
   title: string,
@@ -15,15 +16,22 @@ export interface Log{
 export const toggle=async (running: boolean, form: DownloaderForm): Promise<boolean>=>{
   const token=useCookie('token');
   if(!token.value){
-    message.error("获取token失败")
+    toast.add({
+      title: '添加失败',
+      description: 'token获取失败'
+    })
     return false;
   }
   if(running){
     if(form.ariaLink.length==0){
-      message.error("Aria 地址不能为空");
+      toast.add({
+        title: 'Aria 地址不能为空',
+      })
       return false;
     }else if(form.bangumi.length==0){
-      message.error("番剧表不能为空");
+      toast.add({
+        title: '番剧表不能为空',
+      })
       return false;
     }
     await saveForm(form, false);
@@ -33,10 +41,15 @@ export const toggle=async (running: boolean, form: DownloaderForm): Promise<bool
       }
     })).data;
     if(response.ok){
-      message.success("启动服务成功");
+      toast.add({
+        title: '启动服务成功',
+      })
       return true;
     }else{
-      message.error("启动服务失败: "+response.msg);
+      toast.add({
+        title: '启动服务失败',
+        description: response.msg
+      })
       return false;
     }
   }else{
@@ -46,10 +59,15 @@ export const toggle=async (running: boolean, form: DownloaderForm): Promise<bool
       }
     })).data;
     if(response.ok){
-      message.success("停止服务成功")
+      toast.add({
+        title: '停止服务成功',
+      })
       return true;
     }else{
-      message.error("停止服务失败: "+response.msg);
+      toast.add({
+        title: '停止服务失败',
+        description: response.msg
+      })
       return false;
     }
   }
@@ -68,7 +86,10 @@ export const getLog=async (): Promise<Log[] | null>=>{
   if(response.ok){
     return response.msg.reverse()
   }else{
-    message.error("获取日志失败: "+response.msg);
+    toast.add({
+      title: '获取日志失败',
+      description: response.msg
+    })
     return [];
   }
 }
@@ -151,7 +172,10 @@ export const initStatus=async (): Promise<boolean>=>{
 export const saveForm=async (item: DownloaderForm, showMessage :boolean=true)=>{
   const token=useCookie('token');
   if(!token.value){
-    message.error("获取token失败")
+    toast.add({
+      title: '添加失败',
+      description: 'token获取失败'
+    })
     return;
   }
   const response=(await axios.post(`${reqHost}/api/dl/load`, {
@@ -163,11 +187,16 @@ export const saveForm=async (item: DownloaderForm, showMessage :boolean=true)=>{
   })).data
   if(response.ok){
     if(showMessage){
-      message.success("保存成功");
+      toast.add({
+        title: '保存成功',
+      })
     }
   }else if(!response.ok){
     if(showMessage){
-      message.error("保存表单失败: "+response.msg);
+      toast.add({
+        title: '保存表单失败',
+        description: response.msg
+      })
     }
   }
 }

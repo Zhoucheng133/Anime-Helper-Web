@@ -5,14 +5,21 @@ import { getTimestampOfFirstEpisode } from "./cals";
 import axios from "axios";
 import { reqHost } from "./network";
 
+const toast = useToast()
+
 export const addOk=async (item: EditItem): Promise<boolean>=>{
   const token=useCookie('token');
   if(!token.value){
-    message.error("添加失败: token获取失败");
+    toast.add({
+      title: '添加失败',
+      description: 'token获取失败'
+    })
     return false;
   }
   if(item.title.length==0){
-    message.error("标题不能为空");
+    toast.add({
+      title: '标题不能为空',
+    })
     return false;
   }
   const todayTimestamp = Date.now();
@@ -31,10 +38,15 @@ export const addOk=async (item: EditItem): Promise<boolean>=>{
     }
   })).data;
   if(!response.ok){
-    message.error("添加失败: "+response.msg);
+    toast.add({
+      title: '添加失败',
+      description: response.msg
+    })
     return false;
   }else{
-    message.success("添加成功");
+    toast.add({
+      title: '添加成功',
+    })
     return true;
   }
 }

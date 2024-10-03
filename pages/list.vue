@@ -250,13 +250,15 @@ const delItem=(record: BangumiItem)=>{
         }
       })).data;
       if(response.ok){
-        // message.success("删除成功")
         toast.add({
           title: '删除成功'
         })
         list.value=await getList();
       }else{
-        message.error("删除失败: "+response.msg);
+        toast.add({
+          title: '删除失败',
+          description: response.msg
+        })
       }
       modal.close();
     },
@@ -307,7 +309,9 @@ const onEditOk=async ()=>{
     list.value=await getList();
     return;
   }
-  message.error("编辑失败");
+  toast.add({
+    title: '编辑失败'
+  })
 }
 
 const openEdit=(record: BangumiItem)=>{

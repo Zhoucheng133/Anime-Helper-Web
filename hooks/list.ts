@@ -1,5 +1,6 @@
 import axios from "axios"
 import { reqHost, ssrHost } from "./network"
+const toast = useToast()
 
 export interface BangumiItem{
   id: string,
@@ -62,7 +63,10 @@ export const changeItem=async (item: BangumiItem): Promise<boolean>=>{
   if(response.ok){
     return true;
   }else{
-    message.error("修改参数失败: "+response.msg);
+    toast.add({
+      title: '修改参数失败',
+      description: response.msg
+    })
     return false;
   }
 }

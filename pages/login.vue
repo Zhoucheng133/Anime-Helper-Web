@@ -24,7 +24,7 @@
 import axios from 'axios';
 import PageHeader from '~/components/PageHeader.vue';
 import { reqHost, ssrHost } from '~/hooks/network';
-
+const toast = useToast()
 
 useHead({
   title: 'AnimeHelper | 登录'
@@ -46,10 +46,14 @@ let password=ref("");
 
 const loginHandler=async ()=>{
   if(username.value.length==0){
-    message.error("用户名不能为空");
+    toast.add({
+      title: '用户名不能为空'
+    })
     return;
   }else if(password.value.length==0){
-    message.error("密码不能为空");
+    toast.add({
+      title: '密码不能为空'
+    })
     return;
   }
   const response=(await axios.post(`${reqHost}/api/login`, {
@@ -68,7 +72,10 @@ const loginHandler=async ()=>{
     token.value=response.msg;
     window.location.href='/list';
   }else{
-    message.error(`登录失败: ${response.msg}`);
+    toast.add({
+      title: '登录失败',
+      description: response.msg
+    })
   }
   
 }

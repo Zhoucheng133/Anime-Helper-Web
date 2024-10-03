@@ -107,6 +107,7 @@ import init from '~/hooks/init';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import dayjs from 'dayjs';
 const locale=zhCN;
+const toast = useToast()
 
 const rssOptions=['mikan', 'acgrip'];
 let inputPort=ref('');
@@ -150,7 +151,9 @@ const delExclusionItem=(record: any)=>{
         }
         return true;
       })
-      message.success("删除成功")
+      toast.add({
+        title: '删除成功',
+      })
     },
     onCancel() {},
   });
@@ -166,26 +169,36 @@ const onDialogCancel=()=>{
 
 const addExclusionOk=()=>{
   if(addExclusion.value.length==0){
-    message.error("关键字不能为空");
+    toast.add({
+      title: '关键字不能为空',
+    })
     return;
   }
   if(formData.value.exclusions.includes(addExclusion.value)){
-    message.error("该关键字已存在");
+    toast.add({
+      title: '该关键字已存在',
+    })
     return;
   }
 
   formData.value.exclusions.push(addExclusion.value);
   onDialogCancel();
-  message.success("添加成功");
+  toast.add({
+    title: '添加成功',
+  })
   showAddExclusionDialog.value=false;
 }
 
 const addBangumiOk=()=>{
   if(addBangumi.value.ass.length==0){
-    message.error("字幕组不能为空");
+    toast.add({
+      title: '字幕组不能为空',
+    })
     return;
   }else if(addBangumi.value.title.length==0){
-    message.error("标题不能为空");
+    toast.add({
+      title: '标题不能为空',
+    })
     return;
   }
   const exists = formData.value.bangumi.some(item => 
@@ -193,7 +206,9 @@ const addBangumiOk=()=>{
   );
 
   if(exists){
-    message.error("番剧表已有该数据")
+    toast.add({
+      title: '番剧表已有该数据',
+    })
     return;
   }
   formData.value.bangumi.push({
@@ -201,7 +216,9 @@ const addBangumiOk=()=>{
     "title": addBangumi.value.title,
   })
   onDialogCancel();
-  message.success("添加成功");
+  toast.add({
+    title: '添加成功',
+  })
   showAddBangumiDialog.value=false;
 }
 const delBangumiItem=(record: DownloaderItem)=>{
@@ -217,7 +234,9 @@ const delBangumiItem=(record: DownloaderItem)=>{
         }
         return true;
       })
-      message.success("删除成功")
+      toast.add({
+        title: '删除成功',
+      })
     },
     onCancel() {},
   });
