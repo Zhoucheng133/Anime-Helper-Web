@@ -116,18 +116,11 @@
         日志
       </template>
       <div class="logContent">
-        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}"  class="logItem">
-          <UPopover mode="hover" :popper="{ placement: 'bottom-start' }">
-            <div class="log_label">
-              {{ item.msg }}
-            </div>
-            <template #panel>
-              <div class="p-2">
-                {{ item.msg }}
-              </div>
-            </template>
-          </UPopover>
-          <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" >
+          <UTooltip :ui="{width: 'max-w-sm'}" :text="item.msg" class="logItem" :popper="{ arrow: true }">
+              <div class="log_label">{{ item.msg }}</div>
+            <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+          </UTooltip>
         </div>
       </div>
       <template #footer>
