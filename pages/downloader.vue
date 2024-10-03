@@ -66,20 +66,31 @@
       </template>
     </UAccordion>
   </div>
-  <a-modal v-model:open="showAddBangumiDialog" title="添加一个番剧" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
-    <div class="bangumiItem" style="margin-top: 10px;">
-      <div class="bangumiItem_title">字幕组</div>
-      <div class="bangumiItem_content">
-        <a-input v-model:value="addBangumi.ass"></a-input>
+  <UModal v-model="showAddBangumiDialog" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
+    <UCard>
+      <template #header>
+        添加一个番剧
+      </template>
+      <div class="bangumiItem">
+        <div class="bangumiItem_title" style="margin-bottom: 5px;">字幕组</div>
+        <div class="bangumiItem_content">
+          <UInput v-model="addBangumi.ass" style="width: 100%;"></UInput>
+        </div>
       </div>
-    </div>
-    <div class="bangumiItem" style="margin-top: 10px;">
-      <div class="bangumiItem_title">标题</div>
-      <div class="bangumiItem_content">
-        <a-input v-model:value="addBangumi.title"></a-input>
+      <div class="bangumiItem" style="margin-top: 10px;">
+        <div class="bangumiItem_title" style="margin-bottom: 5px;">标题</div>
+        <div class="bangumiItem_content">
+          <UInput v-model="addBangumi.title"></UInput>
+        </div>
       </div>
-    </div>
-  </a-modal>
+      <template #footer>
+        <div style="display: flex;">
+          <UButton style="margin-left: auto;" variant="soft" color="gray" @click="onDialogCancel">取消</UButton>
+          <UButton style="margin-left: 10px;" @click="addBangumiOk">添加</UButton>
+        </div>
+      </template>
+    </UCard>
+  </UModal>
   <a-modal v-model:open="showAddExclusionDialog" title="添加一个排除关键字" @ok="addExclusionOk" @cancel="onDialogCancel" centered>
     <div class="exclutionItem" style="margin-top: 10px;">
       <div class="exclutionItem_title">关键字</div>
@@ -163,6 +174,8 @@ const onDialogCancel=()=>{
     ass: ''
   };
   addExclusion.value='';
+  showAddBangumiDialog.value=false;
+  showAddExclusionDialog.value=false;
 }
 
 const addExclusionOk=()=>{
@@ -303,7 +316,7 @@ if(!islogin){
     width: 100%
   }
 }
-.bangumiItem{
+/* .bangumiItem{
   display: grid;
   grid-template-columns: 50px auto;
   column-gap: 10px;
@@ -315,7 +328,7 @@ if(!islogin){
 .bangumiItem_content{
   display: flex;
   align-items: center;
-}
+} */
 
 .exclutionItem{
   display: grid;
