@@ -1,5 +1,4 @@
 <template>
-  <a-config-provider :locale="locale">
     <PageHeader class="header" :login="true" :page-name="'bangumi'" />
     <div class="body">
       <a-collapse v-model:activeKey="activeKey">
@@ -39,6 +38,7 @@
           </a-flex>
         </a-collapse-panel>
       </a-collapse>
+      
       <a-modal v-model:open="showAdd" title="添加一个新的番剧" @ok="onAddOk" centered>
         <div class="modalContent">
           <a-input placeholder="番剧标题" v-model:value="addItem.title"></a-input>
@@ -70,7 +70,6 @@
       </div>
     </a-modal>
   </div>
-</a-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -80,11 +79,19 @@ import { initUpdates } from '~/hooks/bangumi';
 import type { EditItem } from '~/hooks/edit';
 import init from '~/hooks/init';
 import { getList, initList, type BangumiItem } from '~/hooks/list';
-import zhCN from 'ant-design-vue/es/locale/zh_CN';
-const locale=zhCN;
 
 let list=ref<string[][]>([]);
 let followList=ref<BangumiItem[]>([])
+
+const items = [
+  { label: '星期日', defaultOpen: true, slot: 'sunday' },
+  { label: '星期一', defaultOpen: true, slot: 'monday' },
+  { label: '星期二', defaultOpen: true, slot: 'tuesday' },
+  { label: '星期三', defaultOpen: true, slot: 'wednesday' },
+  { label: '星期四', defaultOpen: true, slot: 'thursday' },
+  { label: '星期五', defaultOpen: true, slot: 'friday' },
+  { label: '星期六', defaultOpen: true, slot: 'saturday' }
+];
 
 const changeUpdate=()=>{
   addItem.value.now=0;

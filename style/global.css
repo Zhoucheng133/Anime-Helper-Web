@@ -15,9 +15,6 @@ body{
     width: 100%
   }
 }
-.ant-modal div[aria-hidden="true"] {
-  display: none !important;
-}
 .op_style{
   width: 80px;
 }
