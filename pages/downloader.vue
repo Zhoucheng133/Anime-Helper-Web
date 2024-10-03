@@ -117,7 +117,11 @@
       </template>
       <div class="logContent">
         <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
-          <div class="log_label">{{ item.msg }}</div>
+          <div class="log_label">
+            <UTooltip :text="item.msg" :popper="{ arrow: true }">
+              {{ item.msg }}
+            </UTooltip>
+          </div>
           <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
         </div>
       </div>
