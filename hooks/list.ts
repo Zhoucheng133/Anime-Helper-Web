@@ -1,6 +1,5 @@
 import axios from "axios"
 import { reqHost, ssrHost } from "./network"
-// const toast = useToast()
 
 export interface BangumiItem{
   id: string,
