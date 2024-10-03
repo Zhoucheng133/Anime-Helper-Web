@@ -13,21 +13,24 @@
       <i class="bi bi-box-arrow-right"></i>
       <div style="margin-left: 5px;">注销</div>
     </div>
-    <div class="head_mobile_menu" v-if="isMobile && props.login" @click="showDrawer=true">
-      <i class="bi bi-list"></i>
-    </div>
-    <a-drawer title="菜单" placement="bottom" :open="showDrawer" @close="showDrawer=false" height="500">
-      <div :class="isSelect('list') ? 'head_m_item_select':'head_m_item'" @click="link('list')">列表</div>
-      <div :class="isSelect('bangumi') ? 'head_m_item_select':'head_m_item'" @click="link('bangumi')">每日放送</div>
-      <div :class="isSelect('downloader') ? 'head_m_item_select':'head_m_item'" @click="link('downloader')">下载器</div>
-      <div class="head_m_logout" @click="logoutHandler">注销</div>
-    </a-drawer>
+    <UPopover>
+      <div class="head_mobile_menu" v-if="isMobile && props.login">
+        <i class="bi bi-list"></i>
+      </div>
+      <template #panel>
+        <div class="p-4">
+          <div :class="isSelect('list') ? 'head_m_item_select':'head_m_item'" @click="link('list')">列表</div>
+          <div :class="isSelect('bangumi') ? 'head_m_item_select':'head_m_item'" @click="link('bangumi')">每日放送</div>
+          <div :class="isSelect('downloader') ? 'head_m_item_select':'head_m_item'" @click="link('downloader')">下载器</div>
+          <div class="head_m_logout" @click="logoutHandler">注销</div>    
+        </div>
+      </template>
+    </UPopover>
   </div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps(['login', 'pageName']);
-const router=useRouter();
 
 // 注销
 const logoutHandler=()=>{
@@ -48,9 +51,6 @@ const link=(path: string)=>{
 const isSelect=(val: string)=>{
   return val===props.pageName;
 }
-
-// 移动端抽屉
-let showDrawer=ref(false);
 
 // 显示PC菜单
 let showMenu=ref(false);
