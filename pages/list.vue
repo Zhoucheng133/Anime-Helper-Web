@@ -128,6 +128,7 @@ import { reqHost } from '~/hooks/network';
 import { addOk } from '~/hooks/add';
 import { onAddDownloaderOk } from '~/hooks/adddownloader';
 import type { DownloaderItem } from '~/hooks/dl';
+import ComfirmModal from '~/components/ConfirmModal.vue';
 const locale=zhCN;
 const modal = useModal()
 
@@ -217,19 +218,16 @@ let filter=computed(()=>{
     })
   }
 })
-
+const toast = useToast()
 const delItem=(record: BangumiItem)=>{
   const token=useCookie('token');
   if(!token.value){
     return;
-  }
-  Modal.confirm({
-    title: "删除项",
-    content: `你确定要删除:《${record.title}》吗`,
-    centered: true,
+  }  
+  modal.open(ComfirmModal, {
+    title: `删除《${record.title}》？`,
     okText: '删除',
-    cancelText: '取消',
-    async onOk() {
+    onOk: async ()=>{
       const response=(await axios.post(`${reqHost}/api/dellist`, {
         id: record.id
       }, {
@@ -238,13 +236,20 @@ const delItem=(record: BangumiItem)=>{
         }
       })).data;
       if(response.ok){
-        message.success("删除成功")
+        // message.success("删除成功")
+        toast.add({
+          title: '删除成功'
+        })
         list.value=await getList();
       }else{
         message.error("删除失败: "+response.msg);
       }
+      modal.close();
     },
-  });
+    onCancel: ()=>{
+      modal.close();
+    },
+  })
 }
 
 const addOne=async (record: BangumiItem)=>{
