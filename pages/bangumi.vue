@@ -1,43 +1,48 @@
 <template>
     <PageHeader class="header" :login="true" :page-name="'bangumi'" />
     <div class="body">
-      <a-collapse v-model:activeKey="activeKey">
-        <a-collapse-panel key="0" header="星期日">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="1" header="星期一">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[1]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 1)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="2" header="星期二">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[2]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 2)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="3" header="星期三">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[3]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 3)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="4" header="星期四">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[4]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 4)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="5" header="星期五">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[5]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 5)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-        <a-collapse-panel key="6" header="星期六">
-          <a-flex wrap="wrap" gap="middle">
-            <UBadge class="bangumi_item" v-for="(item, index) in list[6]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 6)">{{ item }}</UBadge>
-          </a-flex>
-        </a-collapse-panel>
-      </a-collapse>
+      <UAccordion :items="items">
+        <template #sunday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+        <template #monday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[1]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 1)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+
+        <template #tuesday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[2]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 2)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+
+        <template #wednesday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[3]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 3)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+
+        <template #thursday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[4]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 4)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+
+        <template #friday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[5]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 5)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+
+        <template #saturday>
+          <UContainer class="bangumi_item_container">
+            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[6]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 6)">{{ item }}</UBadge>
+          </UContainer>
+        </template>
+      </UAccordion>
       <UModal v-model="showAdd">
         <UCard>
           <template #header>
@@ -126,8 +131,18 @@ let addItem=ref<EditItem>({
 })
 
 let showAdd=ref(false);
+const taost=useToast();
 
 const onAddOk=async ()=>{
+
+  if(followList.value.some((item)=>item.title==addItem.value.title)){
+    taost.add({
+      title: '添加失败',
+      description: '已存在同名标题',
+    })
+    return;
+  }
+
   if(await addOk(addItem.value)){
     showAdd.value=false;
     followList.value=await getList();
@@ -140,8 +155,8 @@ const onAddOk=async ()=>{
       weekday: 0,
       id: ''
     }
-    return;
   }
+  followList.value=await getList();
 }
 
 useHead({
@@ -163,8 +178,6 @@ const follow=(title: string)=>{
   return false;
 }
 
-const activeKey=ref([0, 1, 2, 3, 4, 5, 6]);
-
 const islogin=await init();
 if(!islogin){
   onMounted(()=>{
@@ -183,5 +196,6 @@ if(!islogin){
   user-select: none;
   /* padding: 5px; */
   cursor: pointer;
+  margin: 7px;
 }
 </style>
