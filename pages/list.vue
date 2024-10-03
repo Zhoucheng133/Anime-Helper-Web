@@ -18,7 +18,7 @@
         <div>{{ analyseEpisode(row as BangumiItem) }}</div>
       </template>
       <template #progress-data="{ row }">
-        <div style="width: 120px;"><UProgress :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
+        <div style="width: 120px;"><UProgress :color="row.now/analyseEpisode(row as BangumiItem)*100==100 ? 'lime' : 'primary'" :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
       </template>
       <template #op-data="{ row }">
         <ULink @click="openEdit(row as BangumiItem)" style="user-select: none;">编辑</ULink>
