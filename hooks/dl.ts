@@ -1,6 +1,5 @@
 import axios from "axios";
 import { reqHost, ssrHost } from "./network";
-const toast = useToast()
 
 export interface DownloaderItem{
   title: string,
@@ -15,6 +14,7 @@ export interface Log{
 
 export const toggle=async (running: boolean, form: DownloaderForm): Promise<boolean>=>{
   const token=useCookie('token');
+  const toast = useToast()
   if(!token.value){
     toast.add({
       title: '添加失败',
@@ -74,6 +74,7 @@ export const toggle=async (running: boolean, form: DownloaderForm): Promise<bool
 }
 
 export const getLog=async (): Promise<Log[] | null>=>{
+  const toast = useToast()
   const token=useCookie('token');
   if(!token.value){
     return null;
@@ -170,6 +171,7 @@ export const initStatus=async (): Promise<boolean>=>{
 }
 
 export const saveForm=async (item: DownloaderForm, showMessage :boolean=true)=>{
+  const toast = useToast()
   const token=useCookie('token');
   if(!token.value){
     toast.add({
