@@ -1,7 +1,7 @@
 <template>
     <PageHeader class="header" :login="true" :page-name="'bangumi'" />
     <div class="body">
-      <UAccordion :items="items">
+      <UAccordion :items="items" multiple>
         <template #sunday>
           <UContainer class="bangumi_item_container">
             <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
