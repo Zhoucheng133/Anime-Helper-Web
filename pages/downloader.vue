@@ -1,117 +1,115 @@
 <template>
-  <a-config-provider :locale="locale">
-    <PageHeader class="header" :login="true" :page-name="'downloader'" />
-    <div class="body">
-      <div class="dl_item">
-        <div>运行状态</div>
-        <div class="dl_item_content">
-          <UBadge :color="running ? 'green' : 'yellow'" style="margin-right: 20px;">{{ running ? '运行中' : "等待中" }}</UBadge>
-          <UToggle v-model="running" @change="toggleRun" />
-        </div>
+  <PageHeader class="header" :login="true" :page-name="'downloader'" />
+  <div class="body">
+    <div class="dl_item">
+      <div>运行状态</div>
+      <div class="dl_item_content">
+        <UBadge :color="running ? 'green' : 'yellow'" style="margin-right: 20px;">{{ running ? '运行中' : "等待中" }}</UBadge>
+        <UToggle v-model="running" @change="toggleRun" />
       </div>
-      <div class="dl_item">
-        <div>系统操作</div>
-        <div class="dl_item_content">
-          <UButton size="xs" variant="soft" @click="showLog">显示日志</UButton>
-          <UButton size="xs" variant="soft" style="margin-left: 20px;" @click="saveForm(formData)" :disabled='running'>保存表单</UButton>
-        </div>
-      </div>
-      <div class="dl_item">
-        <div>RSS 来源</div>
-        <div class="dl_item_content">
-          <USelectMenu :options="rssOptions" v-model="formData.type" :disabled='running'>
-            <template #label>
-              {{ formData.type=='mikan' ? 'Mikan' : 'Acgrip' }}
-            </template>
-            <template #option="{ option: item }">
-              {{ item=='mikan' ? 'Mikan' : 'Acgrip' }}
-            </template>
-          </USelectMenu>
-        </div>
-      </div>
-      <div class="dl_item">
-        <div>更新频率</div>
-        <div class="dl_item_content">
-          <div style="width: 100px;"><UInput v-model="formData.freq" type="number" :disabled='running'></UInput></div>
-          <div style="margin-left: 10px;">分钟</div>
-        </div>
-      </div>
-      <div class="dl_item">
-        <div>Aria2 地址</div>
-        <div class="dl_item_content">
-          <div style="width: 100%;"><UInput v-model="formData.ariaLink" placeholder="http(s)://" :disabled='running' /></div>
-        </div>
-      </div>
-      <div class="dl_item">
-        <div>Aria2 密钥</div>
-        <div class="dl_item_content">
-          <div style="width: 100%;"><UInput v-model="formData.ariaSecret" placeholder="" type="password" :disabled='running' /></div>
-        </div>
-      </div>
-      <a-collapse style="margin-top: 20px;" v-model:activeKey="showFold">
-        <a-collapse-panel key="1" header="番剧表">
-          <UButton :disabled='running' variant="soft" @click="showAddBangumiDialog=true;">添加</UButton>
-          <UTable :rows="formData.bangumi" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }" :columns="bangumiColumn">
-            <template #op-data="{ row }">
-              <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delBangumiItem(row)">删除</UButton></div>
-            </template>
-          </UTable>
-        </a-collapse-panel>
-        <a-collapse-panel key="2" header="排除关键字">
-          <UButton :disabled='running' variant="soft" @click="showAddExclusionDialog=true">添加</UButton>
-          <UTable :rows="exclusionRow" :columns="exclusionColumn" >
-            <template #op-data="{ row }">
-              <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delExclusionItem(row)">删除</UButton></div>
-            </template>
-          </UTable>
-        </a-collapse-panel>
-      </a-collapse>
     </div>
-    <a-modal v-model:open="showAddBangumiDialog" title="添加一个番剧" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
-      <div class="bangumiItem" style="margin-top: 10px;">
-        <div class="bangumiItem_title">字幕组</div>
-        <div class="bangumiItem_content">
-          <a-input v-model:value="addBangumi.ass"></a-input>
-        </div>
+    <div class="dl_item">
+      <div>系统操作</div>
+      <div class="dl_item_content">
+        <UButton size="xs" variant="soft" @click="showLog">显示日志</UButton>
+        <UButton size="xs" variant="soft" style="margin-left: 20px;" @click="saveForm(formData)" :disabled='running'>保存表单</UButton>
       </div>
-      <div class="bangumiItem" style="margin-top: 10px;">
-        <div class="bangumiItem_title">标题</div>
-        <div class="bangumiItem_content">
-          <a-input v-model:value="addBangumi.title"></a-input>
-        </div>
+    </div>
+    <div class="dl_item">
+      <div>RSS 来源</div>
+      <div class="dl_item_content">
+        <USelectMenu :options="rssOptions" v-model="formData.type" :disabled='running'>
+          <template #label>
+            {{ formData.type=='mikan' ? 'Mikan' : 'Acgrip' }}
+          </template>
+          <template #option="{ option: item }">
+            {{ item=='mikan' ? 'Mikan' : 'Acgrip' }}
+          </template>
+        </USelectMenu>
       </div>
-    </a-modal>
-    <a-modal v-model:open="showAddExclusionDialog" title="添加一个排除关键字" @ok="addExclusionOk" @cancel="onDialogCancel" centered>
-      <div class="exclutionItem" style="margin-top: 10px;">
-        <div class="exclutionItem_title">关键字</div>
-        <div class="exclutionItem_content">
-          <a-input v-model:value="addExclusion"></a-input>
-        </div>
+    </div>
+    <div class="dl_item">
+      <div>更新频率</div>
+      <div class="dl_item_content">
+        <div style="width: 100px;"><UInput v-model="formData.freq" type="number" :disabled='running'></UInput></div>
+        <div style="margin-left: 10px;">分钟</div>
       </div>
-    </a-modal>
-    <a-modal v-model:open="showLogDialog" title="日志" okText="完成" @ok="showLogDialog=false" :width="width<720?width-20 : 700" centered :footer="null">
-      <div class="logContent">
-        <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
-          <div class="log_label">{{ item.msg }}</div>
-          <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
-        </div>
+    </div>
+    <div class="dl_item">
+      <div>Aria2 地址</div>
+      <div class="dl_item_content">
+        <div style="width: 100%;"><UInput v-model="formData.ariaLink" placeholder="http(s)://" :disabled='running' /></div>
       </div>
-    </a-modal>
-  </a-config-provider>
+    </div>
+    <div class="dl_item">
+      <div>Aria2 密钥</div>
+      <div class="dl_item_content">
+        <div style="width: 100%;"><UInput v-model="formData.ariaSecret" placeholder="" type="password" :disabled='running' /></div>
+      </div>
+    </div>
+    <UAccordion :items="items" style="margin-top: 20px;" multiple>
+      <template #bangumi>
+        <UButton :disabled='running' variant="soft" @click="showAddBangumiDialog=true;">添加</UButton>
+        <UTable :rows="formData.bangumi" :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: '没有数据' }" :columns="bangumiColumn">
+          <template #op-data="{ row }">
+            <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delBangumiItem(row)">删除</UButton></div>
+          </template>
+        </UTable>
+      </template>
+      <template #exclusion>
+        <UButton :disabled='running' variant="soft" @click="showAddExclusionDialog=true">添加</UButton>
+        <UTable :rows="exclusionRow" :columns="exclusionColumn" >
+          <template #op-data="{ row }">
+            <div><UButton size="xs" color="red" variant="soft" :disabled='running' @click="delExclusionItem(row)">删除</UButton></div>
+          </template>
+        </UTable>
+      </template>
+    </UAccordion>
+  </div>
+  <a-modal v-model:open="showAddBangumiDialog" title="添加一个番剧" @ok="addBangumiOk" @cancel="onDialogCancel" centered>
+    <div class="bangumiItem" style="margin-top: 10px;">
+      <div class="bangumiItem_title">字幕组</div>
+      <div class="bangumiItem_content">
+        <a-input v-model:value="addBangumi.ass"></a-input>
+      </div>
+    </div>
+    <div class="bangumiItem" style="margin-top: 10px;">
+      <div class="bangumiItem_title">标题</div>
+      <div class="bangumiItem_content">
+        <a-input v-model:value="addBangumi.title"></a-input>
+      </div>
+    </div>
+  </a-modal>
+  <a-modal v-model:open="showAddExclusionDialog" title="添加一个排除关键字" @ok="addExclusionOk" @cancel="onDialogCancel" centered>
+    <div class="exclutionItem" style="margin-top: 10px;">
+      <div class="exclutionItem_title">关键字</div>
+      <div class="exclutionItem_content">
+        <a-input v-model:value="addExclusion"></a-input>
+      </div>
+    </div>
+  </a-modal>
+  <a-modal v-model:open="showLogDialog" title="日志" okText="完成" @ok="showLogDialog=false" :width="width<720?width-20 : 700" centered :footer="null">
+    <div class="logContent">
+      <div v-for="(item, index) in logContent" :key="index" :style="item.ok ? {'color': 'green'}:{'color': 'red'}" class="logItem">
+        <div class="log_label">{{ item.msg }}</div>
+        <div class="log_time">{{ dayjs(item.time).format("YYYY-MM-DD HH:mm") }}</div>
+      </div>
+    </div>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
 import { type DownloaderForm, type DownloaderItem, type Log, bangumiColumn, exclusionColumn, getLog, initFormData, initStatus, saveForm, toggle } from '~/hooks/dl';
 import init from '~/hooks/init';
-import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import dayjs from 'dayjs';
-const locale=zhCN;
 const toast = useToast()
-
+const items = [
+  {label: '番剧表', defaultOpen: true, slot: 'bangumi'},
+  {label: '排除关键字', defaultOpen: true, slot: 'exclusion'}
+]
 const rssOptions=['mikan', 'acgrip'];
 let inputPort=ref('');
-let showFold=ref(['1', '2']);
 let showAddBangumiDialog=ref(false);
 let showAddExclusionDialog=ref(false);
 let width=ref(800);
