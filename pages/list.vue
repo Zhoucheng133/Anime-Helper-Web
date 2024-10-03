@@ -101,20 +101,31 @@
           </template>
         </UCard>
       </UModal>
-      <a-modal v-model:open="showDownloader" title="添加一个番剧" @ok="onDownloaderOk" centered>
-        <div class="bangumiItem" style="margin-top: 10px;">
-          <div class="bangumiItem_title">字幕组</div>
-          <div class="bangumiItem_content">
-            <a-input v-model:value="downloaderItem.ass"></a-input>
+      <UModal v-model="showDownloader">
+        <UCard>
+          <template #header>
+            添加到下载器
+          </template>
+          <div class="bangumiItem">
+            <div class="bangumiItem_title">字幕组</div>
+            <div class="bangumiItem_content">
+              <UInput v-model="downloaderItem.ass"></UInput>
+            </div>
           </div>
-        </div>
-        <div class="bangumiItem" style="margin-top: 10px;">
-          <div class="bangumiItem_title">标题</div>
-          <div class="bangumiItem_content">
-            <a-input v-model:value="downloaderItem.title"></a-input>
+          <div class="bangumiItem" style="margin-top: 10px;">
+            <div class="bangumiItem_title">标题</div>
+            <div class="bangumiItem_content">
+              <UInput v-model="downloaderItem.title"></UInput>
+            </div>
           </div>
-        </div>
-      </a-modal>
+          <template #footer>
+            <div style="display: flex;">
+              <UButton style="margin-left: auto;" variant="soft" color="gray" @click="showDownloader=false">取消</UButton>
+              <UButton style="margin-left: 10px;" @click="onDownloaderOk">完成</UButton>
+            </div>
+          </template>
+        </UCard>
+      </UModal>
     </div>
   </a-config-provider>
 </template>
