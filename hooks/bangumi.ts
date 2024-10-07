@@ -1,7 +1,12 @@
 import axios from "axios";
 import { ssrHost } from "./network";
 
-export const initUpdates=async (): Promise<string[][]>=>{
+export interface Calendar{
+  id: number,
+  title: string,
+}
+
+export const initUpdates=async (): Promise<Calendar[][]>=>{
   const token=useCookie('token');
   if(!token.value){
     return [];

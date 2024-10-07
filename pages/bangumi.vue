@@ -4,42 +4,42 @@
       <UAccordion :items="items" multiple>
         <template #sunday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 0)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[0]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 0, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
         <template #monday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[1]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 1)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[1]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 1, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
 
         <template #tuesday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[2]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 2)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[2]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 2, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
 
         <template #wednesday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[3]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 3)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[3]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 3, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
 
         <template #thursday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[4]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 4)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[4]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 4, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
 
         <template #friday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[5]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 5)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[5]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 5, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
 
         <template #saturday>
           <UContainer class="bangumi_item_container">
-            <UBadge :variant="follow(item) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[6]" :key="index" :color="follow(item) ? 'blue' : 'gray'" @click="addHandler(item, 6)">{{ item }}</UBadge>
+            <UBadge :variant="follow(item.title) ? 'solid' : 'soft'" class="bangumi_item" v-for="(item, index) in list[6]" :key="index" :color="follow(item.title) ? 'blue' : 'gray'" @click="addHandler(item.title, 6, item.id)">{{ item.title }}</UBadge>
           </UContainer>
         </template>
       </UAccordion>
@@ -82,12 +82,12 @@
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
 import { addOk } from '~/hooks/add';
-import { initUpdates } from '~/hooks/bangumi';
+import { initUpdates, type Calendar } from '~/hooks/bangumi';
 import type { EditItem } from '~/hooks/edit';
 import init from '~/hooks/init';
 import { getList, initList, type BangumiItem } from '~/hooks/list';
 
-let list=ref<string[][]>([]);
+let list=ref<Calendar[][]>([]);
 let followList=ref<BangumiItem[]>([])
 const weekdayOptions = [
   { id: 0, name: '星期日' },
@@ -163,7 +163,7 @@ useHead({
   title: 'AnimeHelper | 每日放送'
 })
 
-const addHandler=(title: string, weekday: number)=>{
+const addHandler=(title: string, weekday: number, id: number)=>{
   addItem.value.title=title;
   addItem.value.onUpdate=true;
   addItem.value.weekday=weekday;
