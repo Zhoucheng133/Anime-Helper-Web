@@ -82,7 +82,7 @@
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
 import { addOk } from '~/hooks/add';
-import { initUpdates, type Calendar } from '~/hooks/bangumi';
+import { getCalendarItem, initUpdates, type Calendar, type CalendarItem } from '~/hooks/bangumi';
 import type { EditItem } from '~/hooks/edit';
 import init from '~/hooks/init';
 import { getList, initList, type BangumiItem } from '~/hooks/list';
@@ -163,10 +163,13 @@ useHead({
   title: 'AnimeHelper | 每日放送'
 })
 
-const addHandler=(title: string, weekday: number, id: number)=>{
+const addHandler=async (title: string, weekday: number, id: number)=>{
+  const temp: CalendarItem=await getCalendarItem(id);
   addItem.value.title=title;
   addItem.value.onUpdate=true;
   addItem.value.weekday=weekday;
+  addItem.value.updateTo=temp.updates;
+  addItem.value.episodes=temp.eps;
   showAdd.value=true;
 }
 
