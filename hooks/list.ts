@@ -82,12 +82,8 @@ export const listColumn: any=[
     key: 'status',
   },
   {
-    label: "集数",
-    key: 'episode',
-  },
-  {
-    label: "看至",
-    key: 'now',
+    label: '更新周',
+    key: 'weekday',
   },
   {
     label: "进度",

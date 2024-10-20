@@ -14,11 +14,14 @@
       <template #title-data="{ row }">
         <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ row.title }}</div>
       </template>
-      <template #episode-data="{ row }">
-        <div>{{ analyseEpisode(row as BangumiItem) }}</div>
+      <template #weekday-data="{ row }">
+        123
       </template>
       <template #progress-data="{ row }">
-        <div style="width: 120px;"><UProgress :color="row.now/analyseEpisode(row as BangumiItem)*100==100 ? 'lime' : 'primary'" :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
+        <div style="width: 220px; display: flex; align-items: center">
+          <div style="width: 130px;"><UProgress :color="row.now/analyseEpisode(row as BangumiItem)*100==100 ? 'lime' : 'primary'" :value="row.now/analyseEpisode(row as BangumiItem)*100" /></div>
+          <div style="margin-left: auto">{{row.now}} / {{ analyseEpisode(row as BangumiItem) }}</div>
+        </div>
       </template>
       <template #op-data="{ row }">
         <ULink @click="openEdit(row as BangumiItem)" style="user-select: none;">编辑</ULink>
