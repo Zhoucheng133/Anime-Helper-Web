@@ -32,3 +32,12 @@ export function getTimestampOfFirstEpisode(todayTimestamp: number, releaseDay: n
   const firstEpisodeDate = new Date(today.getTime() - daysSinceFirstEpisode * 24 * 60 * 60 * 1000);
   return firstEpisodeDate.getTime();
 }
+
+export function calWeekday(timestamp: number){
+  if(timestamp==0){
+    return '/';
+  }
+  const date: Date = new Date(timestamp);
+  const weekDay: string = date.toLocaleString('zh-CN', { weekday: 'long' });
+  return  weekDay;
+}

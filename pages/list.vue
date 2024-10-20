@@ -15,7 +15,7 @@
         <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ row.title }}</div>
       </template>
       <template #weekday-data="{ row }">
-        123
+        <UBadge color="gray" variant="outline">{{ calWeekday(row.time) }}</UBadge>
       </template>
       <template #progress-data="{ row }">
         <div style="width: 220px; display: flex; align-items: center">
@@ -133,7 +133,7 @@
 
 <script setup lang="ts">
 import PageHeader from '~/components/PageHeader.vue';
-import { analyseEpisode, calculateEpisodesReleased } from '~/hooks/cals';
+import { analyseEpisode, calculateEpisodesReleased, calWeekday } from '~/hooks/cals';
 import { type EditItem, editOk } from '~/hooks/edit';
 import init from '~/hooks/init';
 import { initList, type BangumiItem, listColumn, changeItem, getList } from '~/hooks/list';
